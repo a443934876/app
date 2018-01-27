@@ -39,7 +39,7 @@ public class UserController {
 		/**
 		 * 用户登陆验证
 		 */
-		Map<String, Object> backMap = new HashMap<String, Object>();
+		Map<String, Object> backMap = new HashMap<>();
 		String nike = map.get("nike");
 		String pwd = map.get("pwd");
 		String[] key = { "requestName", "mphone", "email", "pwd", "ret" };

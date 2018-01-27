@@ -17,9 +17,9 @@
 <meta http-equiv="expires" content="0">
 <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
 <meta http-equiv="description" content="This is my page">
-<!-- 
+
 <link rel="stylesheet"
-	href="js/bootstrap-3.3.7-dist/css/bootstrap.min.css"> -->
+	href="js/bootstrap-3.3.7-dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="css/common/common.css" />
 <link rel="stylesheet" href="css/common/sapar.css" />
 <link rel="stylesheet" href="css/common/index_inner.css" />
