@@ -132,7 +132,7 @@ public class UserController {
 	@Transactional(rollbackFor = Exception.class)
 	public ModelAndView GoIndexPage(String Emid, HttpSession session) throws Exception {
 
-		ModelAndView modelAndView = new ModelAndView("indexMenu");
+		ModelAndView modelAndView = new ModelAndView("index");
 
 		modelAndView.addObject("Emid", Emid);
 		session.setAttribute("Emid", Emid);

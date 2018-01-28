@@ -13,7 +13,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
   
 public class MyFilter extends HandlerInterceptorAdapter {  
   
-    private static final String LOGIN_URL = "index.jsp";  
+    private static final String LOGIN_URL = "jsp/Loginpage.jsp";  
     
     private static final String COMPANY_URL = "jsp/MoreComs.jsp";
   
