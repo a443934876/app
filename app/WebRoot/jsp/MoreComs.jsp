@@ -60,12 +60,13 @@ a {
 	<script type="text/javascript">
 		$(function() {
 			var mun = '${Uid}';
+			alert(mun);
 			if (mun == "") {
 				alert("为空");
 				return;
 			}
-			$.post("getCompany", {
-				"personId" : mun
+			$.post("getNewPackageVersion", {
+				"personId" : 6
 			}, function(data) {
 
 				var result = data.result;

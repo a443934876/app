@@ -28,7 +28,8 @@
 	left: 0;
 	right: 0;
 	width: 100%;
-	z-index: 99
+	z-index: 99;
+	color: black;
 }
 
 
@@ -121,9 +122,7 @@
 	line-height: 46px;
 	bottom: 0;
 	text-align: center;
-	color: #fff;
 	font-size: 12px;
-	
 }
 
 #ie6-warning {
