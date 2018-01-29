@@ -81,6 +81,7 @@ a {
 									+ result[i].Emids + "'name='"
 									+ result[i].comid + "'>"
 									+ result[i].comname + "</a></li>");
+									
 				}
 			}
 
@@ -89,7 +90,8 @@ a {
 		});
 
 		function changeLocation(a) {
-			location = "GoIndexPage?Emid=" + a.id&a.name;
+			
+			location = "GoIndexPage?Emid=" + a.id;
 		}
 	</script>
 </body>

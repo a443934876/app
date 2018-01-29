@@ -113,6 +113,7 @@ public class UserController {
 			map.put("Emids", (String) resultArrayList.get(i).get("Emid"));
 			map.put("comname", (String) resultArrayList.get(i).get("comname"));
 			map.put("comid", (String) resultArrayList.get(i).get("comid"));
+			System.out.println(resultArrayList.get(i).get("comid"));
 			backList.add(map);
 		}
 		if (resultArrayList.size() == 1) {
@@ -145,8 +146,8 @@ public class UserController {
 			System.out.println(resultArrayList.get(i).toString());
 			
 			
-			map.put("Emids", (String) resultArrayList.get(i).get("Emid"));
-			map.put("comname", (String) resultArrayList.get(i).get("comname"));
+			map.put("proname", (String) resultArrayList.get(i).get("proname"));
+			map.put("pubdate", (String) resultArrayList.get(i).get("pubdate"));
 			backList.add(map);
 		}
 		
@@ -198,7 +199,7 @@ public class UserController {
 	public ModelAndView GoIndexPage(String Emid, HttpSession session) throws Exception {
 
 		ModelAndView modelAndView = new ModelAndView("index");
-
+		System.out.println(Emid);
 		modelAndView.addObject("Emid", Emid);
 		session.setAttribute("Emid", Emid);
 

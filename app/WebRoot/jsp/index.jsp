@@ -48,8 +48,8 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td>慧为安全生产平台软件安服通201710.0.1版本发布</td>
-					<td>2017-12-17</td>
+					<td id="td"></td>
+					<td id="td2"></td>
 				</tr>
 			</tbody>
 		</table>
@@ -61,14 +61,20 @@
 	$().ready(function () {
 		
 		
-		var comid = "${Emids}";
+		var comid = 6;
 		
 		/* var args = {"time":new Date()}; */
 		$.post("getNewPackageVersion",{"comid":comid},function (data){
-			
+			var result =data.result;
+			for (var i = 0; i < result.length; i++) {
+
+					$("#td").append(result[i].proname);
+					$("#td2").append(result[i].pubdate);
+									
+				}
 		});
 		
-	}
+	});
 		
 
 	
