@@ -51,9 +51,7 @@ public class UserController {
 				return backMap;
 			}
 			if (ret.equals("0")) {
-
 				backMap.put("result", "success");
-				System.out.println(resultArrayList.get(0).toString() + "******");
 				// 返回0表示登陆成功，将用户的id存起来
 				if (((String) resultArrayList.get(0).get("ret")).equals("0")) {
 					String Uid = (String) resultArrayList.get(0).get("Uid");
@@ -114,6 +112,73 @@ public class UserController {
 			Map<String, String> map = new HashMap<String, String>();
 			map.put("Emids", (String) resultArrayList.get(i).get("Emid"));
 			map.put("comname", (String) resultArrayList.get(i).get("comname"));
+			map.put("comid", (String) resultArrayList.get(i).get("comid"));
+			backList.add(map);
+		}
+		if (resultArrayList.size() == 1) {
+			session.setAttribute("Emid", (String) resultArrayList.get(0).get("Emid"));
+			session.setAttribute("orgidstr", (String) resultArrayList.get(0).get("orgidstr"));
+			session.setAttribute("orgname", (String) resultArrayList.get(0).get("orgname"));
+			session.setAttribute("comid", (String) resultArrayList.get(0).get("comid"));
+		}
+		Map<String, Object> backMap = new HashMap<String, Object>();
+		backMap.put("result", backList);
+		return backMap;
+
+	}
+
+	// 查询版本
+	@RequestMapping("getNewPackageVersion")
+	@ResponseBody
+	public Map<String, Object> getNewPackageVersion(String comid) throws Exception {
+
+		String[] key = { "packageid", "comid" };
+		Object[] value = { 0, comid};
+		ArrayList<HashMap<String, Object>> resultArrayList;
+
+		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value, "getNewPackageVersion",
+				WebServiceUtil.HUIWEI_PM_URL, WebServiceUtil.HUIWEI_PM_NAMESPACE);
+		// 返回到前端的集合
+		ArrayList<Object> backList = new ArrayList<Object>();
+		for (int i = 0; i < resultArrayList.size(); i++) {
+			Map<String, String> map = new HashMap<String, String>();
+			System.out.println(resultArrayList.get(i).toString());
+			
+			
+			map.put("Emids", (String) resultArrayList.get(i).get("Emid"));
+			map.put("comname", (String) resultArrayList.get(i).get("comname"));
+			backList.add(map);
+		}
+		
+		Map<String, Object> backMap = new HashMap<String, Object>();
+		backMap.put("result", backList);
+		return backMap;
+
+	}
+
+	// 增加app
+	@RequestMapping("addPackageVersion")
+	@ResponseBody
+	public Map<String, Object> addPackageVersion(String personId, HttpSession session) throws Exception {
+
+		String[] key = { "puhdate", "ver", "packageid", "modifyDetail", "filepath", "ismust" };
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		System.out.println(formatter.format(new Date()));
+		String SendTime = formatter.format(new Date());
+		Object[] value = { SendTime, "20170115.1.1", 1, "新增程序包", "", true };
+		ArrayList<HashMap<String, Object>> resultArrayList;
+
+		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value, "addPackageVersion", WebServiceUtil.HUIWEI_PM_URL,
+				WebServiceUtil.HUIWEI_PM_NAMESPACE);
+		System.out.println(resultArrayList);
+		// 返回到前端的集合
+		ArrayList<Object> backList = new ArrayList<Object>();
+		for (int i = 0; i < resultArrayList.size(); i++) {
+
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("Emids", (String) resultArrayList.get(i).get("Emid"));
+			map.put("comname", (String) resultArrayList.get(i).get("comname"));
+			
 			backList.add(map);
 		}
 		if (resultArrayList.size() == 1) {
@@ -127,7 +192,7 @@ public class UserController {
 
 	}
 
-	// 获取用户登录后公司信息的选择(公文标题，整改内容等)
+	// 获取用户登录后公司信息的选择
 	@RequestMapping("GoIndexPage")
 	@Transactional(rollbackFor = Exception.class)
 	public ModelAndView GoIndexPage(String Emid, HttpSession session) throws Exception {

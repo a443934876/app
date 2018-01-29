@@ -82,7 +82,7 @@ text-align: center;
 		</div>
 	</div>
 	<div class="heart1">
-		<table class="table table-bordered">
+		<table class="table table-bordered table-hover table-responsive">
 			<thead>
 				<tr>
 					<th>程序包名称</th>

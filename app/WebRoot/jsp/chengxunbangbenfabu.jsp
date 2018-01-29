@@ -1,8 +1,7 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
 
@@ -37,13 +36,13 @@
 <body class="body">
 	<div><jsp:include page="head.jsp" /></div>
 	<div class="heart">
-		<div style="margin-left: 10px;padding-top: 10px;">
+		<div style="margin-left: 10px; padding-top: 10px;">
 			<div>
 				<span>程序包名称：</span> <span>xxx</span>
 			</div>
 			<br>
 			<div>
-				<span>程序版本编号：</span> <input type="text" style="width:335px;" />
+				<span>程序版本编号：</span> <input type="text" style="width: 335px;" />
 			</div>
 			<br>
 			<div>
@@ -59,23 +58,31 @@
 				<span>是否强制升级：</span> <input type="checkbox" />
 			</div>
 			<br>
-			<div style="float:left">
+			<div style="float: left">
 				<span>扫描上传：</span>
 			</div>
 			<div>
-				<input type="file" style="float:left" /><input type="submit"
+				<input type="file" style="float: left" /><input type="submit"
 					value="上传">
 			</div>
 			<br> <br>
 			<div>
-				<input type="submit" value="提交" style="margin-left: 30%">
+				<input type="submit" id="submit" value="提交" style="margin-left: 30%">
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript">
+	/* $("#submit").click(function() {
+			$.post("addPackageVersion", function(data) {
+				alert(data.result);
+			});
 
+		}); */
+	</script>
 
 
 
 
 </body>
+
 </html>

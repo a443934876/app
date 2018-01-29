@@ -55,64 +55,31 @@
 		</table>
 
 	</div>
-
-	<%-- <div id="container">
-    <div id="bd">
-    	<div class="wrap clearfix">
-        	<div class="sidebar">
-            	<h2 class="sidebar-header"><p>功能导航</p></h2>
-                <ul class="nav" style="height:80%">
-                	<li class="office current">
-                        <div class="nav-header"><a onclick="returnFirst()" class="clearfix"><span>返回首页</span><i class="icon"></i></a></div>
-                    </li>
-                    <li class="gongwen">
-                        <div class="nav-header"><a href="jsp/TroubleHistroy.jsp"  target="iframe" class="clearfix"><span>隐患查询</span><i class="icon"></i></a></div>
-                    </li>
-                    <li class="konwledge">
-                    	<div class="nav-header"><a href="jsp/FindGovern.jsp" class="clearfix" target="iframe"><span>公文查阅</span><i class="icon"></i></a></div>
-                    </li>
-                    <li class="nav-info">
-                        <div class="nav-header">
-                            <a href="jsp/FileUpload.jsp" class="clearfix" target="iframe"><span>公文上传</span><i class="icon"></i>
-                            </a>
-                        </div>
-                    </li>
-                    <li class="agency">
-                        <div class="nav-header"><a href="jsp/UserSet.jsp" class="clearfix" target="iframe"><span>用户设置</span><i class="icon"></i></a></div>
-                    </li>
-                    <li class="system">
-                        <div class="nav-header">
-                            <a href="javascript:;"  class="clearfix">
-                                <span>系统</span>
-                                <i class="icon"></i>
-                            </a>
-                        </div>
-                        <ul class="subnav">
-                            <li><a onclick="closeWindow()">退出系统</a></li>
-                            <li><a href="jsp/UsingHelp.jsp" target="iframe">使用帮助</a></li>
-                           
-                        </ul>
-                    </li>
-                   
-                </ul>
-            </div>
-            <div class="content">
-                
-            	<iframe src="getGovern?Emid=${Emid}" id="iframeId" name="iframe" width="100%" height="100%" frameborder="0"></iframe>
-            </div>
-        </div>
-    </div>
-</div> --%>
 </body>
 <script type="text/javascript" src="js/index_inner.js"></script>
 <script type="text/javascript">
-	function closeWindow() {
-		parent.location.replace("./index.jsp");
-	};
+	$().ready(function () {
+		
+		
+		var comid = "${Emids}";
+		
+		/* var args = {"time":new Date()}; */
+		$.post("getNewPackageVersion",{"comid":comid},function (data){
+			
+		});
+		
+	}
+		
 
-	function returnFirst() {
-		location = "jsp/MoreComs.jsp";
-	};
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </script>
 </html>
 

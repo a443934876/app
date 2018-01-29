@@ -16,7 +16,7 @@ public class JspFilter implements Filter{
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
+	
 		
 	}
 
@@ -37,13 +37,13 @@ public class JspFilter implements Filter{
         String Emid = (String)session.getAttribute("Emid");
 		String requestUrl = request.getRequestURI();
 		
-		 if(requestUrl.endsWith("index.jsp")){
+		 if(requestUrl.endsWith("Loginpage.jsp")){
 			arg2.doFilter(request, response);
 			return;
 		}else{
 			 if (Uid == null || "".equals(Uid)) {  
 		        	
-		        	response.sendRedirect("../index.jsp");
+		        	response.sendRedirect("../jsp/Loginpage.jsp");
 		        	
 		        }
 		        else if(Emid == null || "".equals(Emid)){
