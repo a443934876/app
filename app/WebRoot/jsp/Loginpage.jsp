@@ -100,14 +100,14 @@
 				<div class="row cl">
 					<label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60d;</i></label>
 					<div class="formControls col-xs-8">
-						<input id="text1" type="text" placeholder="账户"
-							class="input-text size-L">
+						<input id="text1" type="text" placeholder="请输入账号"
+							class="input-text size-L" >
 					</div>
 				</div>
 				<div class="row cl">
 					<label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60e;</i></label>
 					<div class="formControls col-xs-8">
-						<input id="text2" type="password" placeholder="密码"
+						<input id="text2" type="password" placeholder="请输入密码"
 							class="input-text size-L">
 					</div>
 				</div>
@@ -128,6 +128,8 @@
 	<script type="text/javascript">
 		var reg1 = /^[a-zA-Z]\w*$/i;//由字符和数字组成并且由字符开头
 
+		
+		
 		function clicks() {
 			if ($("#text1").val() == "") {
 				alert("用户名不能为空");

@@ -34,6 +34,26 @@
 	font-size: 15px;
 }
 </style>
+<script type="text/javascript" src="js/index_inner.js"></script>
+<script type="text/javascript">
+	$(document).ready(function () {
+		
+		
+		var comid = 6;
+		
+		/* var args = {"time":new Date()}; */
+		$.post("getNewPackageVersion",{"comid":comid},function (data){
+			var result =data.result;
+			for (var i = 0; i < result.length; i++) {
+					$("#td").append(result[i].proname);
+					$("#td2").append(result[i].pubdate);			
+				}
+		});
+		
+	});
+		
+
+</script>
 <title>企业系统</title>
 </head>
 
@@ -56,36 +76,6 @@
 
 	</div>
 </body>
-<script type="text/javascript" src="js/index_inner.js"></script>
-<script type="text/javascript">
-	$().ready(function () {
-		
-		
-		var comid = 6;
-		
-		/* var args = {"time":new Date()}; */
-		$.post("getNewPackageVersion",{"comid":comid},function (data){
-			var result =data.result;
-			for (var i = 0; i < result.length; i++) {
 
-					$("#td").append(result[i].proname);
-					$("#td2").append(result[i].pubdate);
-									
-				}
-		});
-		
-	});
-		
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-</script>
 </html>
 

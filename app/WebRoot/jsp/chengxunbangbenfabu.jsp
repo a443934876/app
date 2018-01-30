@@ -38,32 +38,34 @@
 	<div class="heart">
 		<div style="margin-left: 10px; padding-top: 10px;">
 			<div>
-				<span>程序包名称：</span> <span>xxx</span>
+				<span>程序包名称：</span> <span id="packageName">xxx</span>
 			</div>
 			<br>
 			<div>
-				<span>程序版本编号：</span> <input type="text" style="width: 335px;" />
+				<span>程序版本编号：</span> <input id="packageId" type="text"
+					style="width: 335px;" />
 			</div>
 			<br>
 			<div>
 				<span>更新修改功能：</span>
-				<textarea style="vertical-align: top;" rows="5" cols="65"></textarea>
+				<textarea id="packageUpdateDetails" style="vertical-align: top;"
+					rows="5" cols="65"></textarea>
 			</div>
 			<br>
 			<div>
-				<span>预备发布日期：</span> <input type="text" />
+				<span>预备发布日期：</span> <input id="packageDate" type="text" />
 			</div>
 			<br>
 			<div>
-				<span>是否强制升级：</span> <input type="checkbox" />
+				<span>是否强制升级：</span> <input id="packageForceUpdate" type="checkbox" />
 			</div>
 			<br>
 			<div style="float: left">
 				<span>扫描上传：</span>
 			</div>
 			<div>
-				<input type="file" style="float: left" /><input type="submit"
-					value="上传">
+				<input type="file" style="float: left" /><input id="button"
+					type="button" value="上传"">
 			</div>
 			<br> <br>
 			<div>
@@ -72,12 +74,39 @@
 		</div>
 	</div>
 	<script type="text/javascript">
-	/* $("#submit").click(function() {
-			$.post("addPackageVersion", function(data) {
-				alert(data.result);
-			});
+		$("#button").click(function() {
+			alert($("input#packageForceUpdate:checkbox").is(":checked"));
 
-		}); */
+		});
+		
+		
+		
+		
+		$("#submit").click(function() {
+			if ($("#packageId").val() == "") {
+				alert("程序版本编号不能为空");
+				return;
+			} else if ($("#packageUpdateDetails").val() == "") {
+				alert("更新修改功能不能为空");
+				return;
+			} else if ($("#packageDate").val() == "") {
+				alert("预备发布日期不能为空");
+				return;
+			} else {
+				$.post("addPackageVersion", {
+					"packageName" : $("packageName").val(),
+					"packageId" : $("packageId").val(),
+					"packageUpdateDetails" : $("packageUpdateDetails").val(),
+					"packageDate" : $("packageDate").val(),
+					"packageForceUpdate" : $("input#packageForceUpdate:checkbox").is(":checked")}
+				, function(data){
+						alert("1");
+					});
+					
+					}
+				});
+		
+		
 	</script>
 
 

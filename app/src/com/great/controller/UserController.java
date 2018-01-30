@@ -144,10 +144,16 @@ public class UserController {
 		for (int i = 0; i < resultArrayList.size(); i++) {
 			Map<String, String> map = new HashMap<String, String>();
 			System.out.println(resultArrayList.get(i).toString());
-			
+			String date = (String) resultArrayList.get(i).get("pubdate");
+			String newdate;
+			if(date.indexOf("T")>-1) {
+				newdate = date.substring(0, date.indexOf("T"));
+			}else {
+				newdate = date;
+			}
 			
 			map.put("proname", (String) resultArrayList.get(i).get("proname"));
-			map.put("pubdate", (String) resultArrayList.get(i).get("pubdate"));
+			map.put("pubdate", newdate);
 			backList.add(map);
 		}
 		
@@ -166,6 +172,7 @@ public class UserController {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		System.out.println(formatter.format(new Date()));
 		String SendTime = formatter.format(new Date());
+		//选择日期
 		Object[] value = { SendTime, "20170115.1.1", 1, "新增程序包", "", true };
 		ArrayList<HashMap<String, Object>> resultArrayList;
 
