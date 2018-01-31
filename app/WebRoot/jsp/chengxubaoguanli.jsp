@@ -9,17 +9,19 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-
 <title>程序包管理</title>
 
-<meta http-equiv="pragma" content="no-cache">
-<meta http-equiv="cache-control" content="no-cache">
-<meta http-equiv="expires" content="0">
-<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
-<meta http-equiv="description" content="This is my page">
-<!--
-	<link rel="stylesheet" type="text/css" href="styles.css">
-	-->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="css/h-ui/H-ui.login.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet"
+	href="js/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.base64.js"></script>
+<script type="text/javascript"
+	src="js/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-table.js"></script>
+<script type="text/javascript" src="js/bootstrap-table-export.js"></script>
+
 <style type="text/css">
 .heart {
 	margin: 1px auto;
@@ -42,36 +44,149 @@ thead {
 	text-align: center;
 }
 </style>
+<script type="text/javascript">
+$(function () {
+	 $(function () {  
+	        $("#reportTable").bootstrapTable({  
+	            method: 'post',  
+	            cache: false,  
+	            height: 400,  
+	            striped: true,  
+	            pagination: true,  
+	            pageSize: 5,  
+	            pageNumber:1,  
+	            pageList: [10, 20, 50, 100, 200, 500],  
+	            sidePagination:'client',  
+	            exportTypes: ['csv','txt','xml'],  
+	            
+	            clickToSelect: true,  
+	            columns:   
+	            [  
+	                 
+	                {field:"name",title:"测试姓名",align:"center",valign:"middle",sortable:"true"},  
+	                {field:"age",title:"年龄",align:"center",valign:"middle",sortable:"true"},  
+	                {field:"sex",title:"性别",align:"center",valign:"middle",sortable:"true"},  
+	                {
+	                    title: '操作',
+	                    field: 'id',
+	                    align: 'center',
+	                    formatter:function(value,row,index){  
+	                 var e = '<a href="#" mce_href="#" onclick="edit(\''+ row.id + '\')">进入</a> ';  
+	                 
+	                      return e;  
+	                  } 
+	                }
+	            ],  
+	            data:datas,  
+	        });                                       
+	    });   
+   /*  $("#reportTable").bootstrapTable({ 
+    	alert(datas[0]);
+    	method: 'post',
+        cache: false,  
+        height: 300, 
+        striped: true,  
+        pagination: true,  
+        pageSize: 5,  
+        pageNumber:1,  
+        pageList: [10, 20, 50, 100, 200, 500],  
+        sidePagination:'client',  
+        exportTypes: ['csv','txt','xml'],    
+        clickToSelect: true,
+        columns:   
+        [  
+            {field:"promaname",title:"程序包名称",align:"center",valign:"middle",sortable:"true"},  
+            {field:"plat",title:"兼容平台",align:"center",valign:"middle",sortable:"true"},  
+            {field:"profun",title:"功能简述",align:"center",valign:"middle",sortable:"true"},  
+            {
+                title: '发布新版',
+                field: 'promaid',
+                align: 'center',
+                formatter:function(value,row,index){  
+             var e = '<a href="#" mce_href="#" onclick="edit(\''+ row.id + '\')">进入</a> ';  
+        
+                  return e;  
+              } 
+            }
+        ],  
+        data:datas,  
+    });                                       
+});     */
+	$(document).ready(function () {
+	
+		var comid = 6;
+		getPackage(comid);
+		$("#button").click(function() {
+			$.ajax({
+				type : "POST",
+				url : "addPackage",
+				async : false,
+				scriptCharset : 'utf-8',
+				data : {
+					"packageName" : $("#packageName").val(),
+					"plat" : $("#plat").val(),
+					"funDetail" : $("#funDetail").val(),
+					"comid" : comid
+				},
+				success : function() {
+					window.location.reload();
+				}
+			});
+		});
+		
+	});
+ 
+	
+	
+	
+	
+	function getPackage(comid) {
+ 	 $.post("getPackage",{"comid":comid},function(date){
+			var result = date.result;
+			var datas = [];
+			$.each(result,function(i,item){
+				datas[i]= {"promaname":result[i].promaname,"plat":result[i].plat
+						,"profun":result[i].profun,"promaid":result[i].promaid};
+			});
+			alert("1"); 
+			
+ 	 });
+	
+	});
+
+</script>
 </head>
 
 <body>
 	<div><jsp:include page="head.jsp" /></div>
+
 	<div>
 		<div class="heart">
 			<div style="margin-left: 10px; padding-top: 10px;">
 				<div>
-					<span>程序包名称：&nbsp;&nbsp;</span><input type="text"
+					<span>程序包名称：&nbsp;&nbsp;</span><input id="packageName" type="text"
 						style="width: 400px;">
 
 				</div>
 				<br>
 
 				<div>
-					<span>兼容平台：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><input type="text"
-						style="width: 400px;">
+					<span>兼容平台：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><input id="plat"
+						type="text" style="width: 400px;">
 
 				</div>
 				<br>
 
 				<div>
 					<span>程序包功能：&nbsp;</span>
-					<textarea style="vertical-align: top;" rows="3" cols="76"></textarea>
+					<textarea id="funDetail" style="vertical-align: top;" rows="3"
+						cols="64"></textarea>
 
 				</div>
 				<br>
 
 				<div>
-					<input type="button" value="提&nbsp;&nbsp;&nbsp;&nbsp;交"
+					<input id="button" type="button" value="提&nbsp;&nbsp;&nbsp;&nbsp;交"
 						style="width: 100px">
 
 				</div>
@@ -80,76 +195,24 @@ thead {
 			</div>
 		</div>
 		<div class="heart1">
-			<table class="table table-bordered table-hover table-responsive">
+			<table id="reportTable"
+				class="table table-bordered table-hover table-responsive">
 				<thead>
 					<tr>
-						<th>程序包名称</th>
-						<th>兼容平台</th>
-						<th>功能简述</th>
-						<th>发布新版</th>
+						<th style="width: 30%">程序包名称</th>
+						<th style="width: 20%">兼容平台</th>
+						<th style="width: 30%">功能简述</th>
+						<th style="width: 15%">发布新版</th>
 					</tr>
 				</thead>
-				<tbody>
-					<tr>
-						<td>慧为安监通_android</td>
-						<td>android</td>
-						<td>安全检查、设施设备</td>
-						<td><a>进入</a></td>
-						
-					</tr>
-					<tr>
-						<td>慧为安监通_android</td>
-						<td>android</td>
-						<td>安全检查、设施设备</td>
-						<td><a>进入</a></td>
-					</tr>
-					<tr>
-						<td>慧为安监通_android</td>
-						<td>android</td>
-						<td>安全检查、设施设备</td>
-						<td><a>进入</a></td>
-					</tr>
-					<tr>
-						<td>慧为安监通_android</td>
-						<td>android</td>
-						<td>安全检查、设施设备</td>
-						<td><a>进入</a></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					
-					</tr>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						
-					</tr>
-					<tr>
-						
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<tr>
-					
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
+				<tbody id="tbody">
+
 				</tbody>
 			</table>
 		</div>
-		<div style="margin: auto; width: 550px;">
-			<span
-				style="float: right;">第1页/共3页&nbsp;&nbsp;第1页|下一页|上一页|最末页</span>
-		</div>
+
+
+
 
 	</div>
 

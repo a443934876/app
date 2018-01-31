@@ -1,8 +1,7 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
 
@@ -10,19 +9,20 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-<meta http-equiv="pragma" content="no-cache">
-<meta http-equiv="cache-control" content="no-cache">
-<meta http-equiv="expires" content="0">
-<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
-<meta http-equiv="description" content="This is my page">
-
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet"
 	href="js/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="css/common/common.css" />
-<link rel="stylesheet" href="css/common/sapar.css" />
-<link rel="stylesheet" href="css/common/index_inner.css" />
-<link rel="stylesheet" href="css/h-ui/H-ui.login.css" />
+<link href="css/h-ui/H-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="css/h-ui/H-ui.login.css" rel="stylesheet" type="text/css" />
+<link href="css/h-ui/style.css" rel="stylesheet" type="text/css" />
+<link href="css/h-ui/iconfont.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="js/bootstrap-table.css" />
 <script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.base64.js"></script>
+<script type="text/javascript"
+	src="js/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-table.js"></script>
+<script type="text/javascript" src="js/bootstrap-table-export.js"></script>
 <style type="text/css">
 .div1 {
 	margin-top: 2%;
@@ -68,7 +68,6 @@ h3 {
 .nav .drop-down:hover .drop-down-content {
 	display: block;
 }
-
 </style>
 <title></title>
 </head>
@@ -92,8 +91,8 @@ h3 {
 				</ul></li>
 			<li class="drop-down"><a href="jsp/index.jsp">帮助</a>
 				<ul class="drop-down-content">
-					<li><a href="jsp/index.jsp">版权说明</a></li>
-					<li><a href="jsp/index.jsp">使用帮助</a></li>
+					<li><a href="jsp/head.jsp">版权说明</a></li>
+					<li><a href="jsp/Test.jsp">测试</a></li>
 				</ul></li>
 		</ul>
 	</div>

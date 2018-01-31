@@ -162,6 +162,54 @@ public class UserController {
 		return backMap;
 
 	}
+	// getPackage
+		@RequestMapping("getPackage")
+		@ResponseBody
+		public Map<String, Object> getPackage(String comid) throws Exception {
+
+			String[] key = { "packageid","packagename", "comid" };
+			Object[] value = { 0, "",comid};
+			ArrayList<HashMap<String, Object>> resultArrayList;
+
+			resultArrayList = WebServiceUtil.getWebServiceMsg(key, value, "getPackage",
+					WebServiceUtil.HUIWEI_PM_URL, WebServiceUtil.HUIWEI_PM_NAMESPACE);
+			// 返回到前端的集合
+			ArrayList<Object> backList = new ArrayList<Object>();
+			for (int i = 0; i < resultArrayList.size(); i++) {
+				Map<String, String> map = new HashMap<String, String>();
+				map.put("promaid", (String) resultArrayList.get(i).get("promaid"));
+				map.put("promaname", (String) resultArrayList.get(i).get("promaname"));
+				map.put("profun", (String) resultArrayList.get(i).get("profun"));
+				map.put("plat", (String) resultArrayList.get(i).get("plat"));
+				backList.add(map);
+			}
+			
+			Map<String, Object> backMap = new HashMap<String, Object>();
+			backMap.put("result", backList);
+			return backMap;
+
+		}
+		// addPackage
+		@RequestMapping("addPackage")
+		@ResponseBody
+		public String addPackage(@RequestParam Map<String, String> map) throws Exception {
+			String packageName = map.get("packageName");
+			String funDetail = map.get("funDetail");
+			String plat = map.get("plat");
+			String comid = map.get("comid");
+			String[] key = { "packageName","funDetail","plat", "comid" };
+			Object[] value = { packageName, funDetail,plat,comid};
+			ArrayList<HashMap<String, Object>> resultArrayList;
+
+			resultArrayList = WebServiceUtil.getWebServiceMsg(key, value, "addPackage",
+					WebServiceUtil.HUIWEI_PM_URL, WebServiceUtil.HUIWEI_PM_NAMESPACE);
+			
+			
+			
+			String result= (String) resultArrayList.get(0).get(0);
+			return result;
+
+		}
 
 	// 增加app
 	@RequestMapping("addPackageVersion")

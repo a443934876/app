@@ -1,8 +1,7 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
 
@@ -33,26 +32,29 @@
 	margin-top: 50px;
 	font-size: 15px;
 }
+
 </style>
 <script type="text/javascript" src="js/index_inner.js"></script>
 <script type="text/javascript">
-	$(document).ready(function () {
-		
-		
-		var comid = 6;
-		
-		/* var args = {"time":new Date()}; */
-		$.post("getNewPackageVersion",{"comid":comid},function (data){
-			var result =data.result;
-			for (var i = 0; i < result.length; i++) {
-					$("#td").append(result[i].proname);
-					$("#td2").append(result[i].pubdate);			
-				}
-		});
-		
-	});
-		
+	$(document).ready(
+			function() {
 
+				var comid = 6;
+
+				/* var args = {"time":new Date()}; */
+				$.post("getNewPackageVersion", {
+					"comid" : comid
+				}, function(data) {
+					var result = data.result;
+					for (var i = 0; i < result.length; i++) {
+						var tr = $("<tr><th>" + result[i].proname + "</th><th>"
+								+ result[i].pubdate + "</th><tr>");
+						$("#tbody").append(tr);
+
+					}
+				});
+
+			});
 </script>
 <title>企业系统</title>
 </head>
@@ -65,12 +67,12 @@
 				<tr>
 					<th>新版本发布信息:</th>
 				</tr>
-			</thead>
-			<tbody>
 				<tr>
-					<td id="td"></td>
-					<td id="td2"></td>
+					<th>程序包名称</th>
+					<th>程序包发布日期</th>
 				</tr>
+			</thead>
+			<tbody id="tbody">
 			</tbody>
 		</table>
 
