@@ -1,7 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
 
@@ -40,80 +41,13 @@ thead {
 	background-color: #CCCCCC;
 }
 
-.table th, .table td {
+.table th,.table td {
 	text-align: center;
 }
 </style>
 <script type="text/javascript">
-$(function () {
-	 $(function () {  
-	        $("#reportTable").bootstrapTable({  
-	            method: 'post',  
-	            cache: false,  
-	            height: 400,  
-	            striped: true,  
-	            pagination: true,  
-	            pageSize: 5,  
-	            pageNumber:1,  
-	            pageList: [10, 20, 50, 100, 200, 500],  
-	            sidePagination:'client',  
-	            exportTypes: ['csv','txt','xml'],  
-	            
-	            clickToSelect: true,  
-	            columns:   
-	            [  
-	                 
-	                {field:"name",title:"测试姓名",align:"center",valign:"middle",sortable:"true"},  
-	                {field:"age",title:"年龄",align:"center",valign:"middle",sortable:"true"},  
-	                {field:"sex",title:"性别",align:"center",valign:"middle",sortable:"true"},  
-	                {
-	                    title: '操作',
-	                    field: 'id',
-	                    align: 'center',
-	                    formatter:function(value,row,index){  
-	                 var e = '<a href="#" mce_href="#" onclick="edit(\''+ row.id + '\')">进入</a> ';  
-	                 
-	                      return e;  
-	                  } 
-	                }
-	            ],  
-	            data:datas,  
-	        });                                       
-	    });   
-   /*  $("#reportTable").bootstrapTable({ 
-    	alert(datas[0]);
-    	method: 'post',
-        cache: false,  
-        height: 300, 
-        striped: true,  
-        pagination: true,  
-        pageSize: 5,  
-        pageNumber:1,  
-        pageList: [10, 20, 50, 100, 200, 500],  
-        sidePagination:'client',  
-        exportTypes: ['csv','txt','xml'],    
-        clickToSelect: true,
-        columns:   
-        [  
-            {field:"promaname",title:"程序包名称",align:"center",valign:"middle",sortable:"true"},  
-            {field:"plat",title:"兼容平台",align:"center",valign:"middle",sortable:"true"},  
-            {field:"profun",title:"功能简述",align:"center",valign:"middle",sortable:"true"},  
-            {
-                title: '发布新版',
-                field: 'promaid',
-                align: 'center',
-                formatter:function(value,row,index){  
-             var e = '<a href="#" mce_href="#" onclick="edit(\''+ row.id + '\')">进入</a> ';  
-        
-                  return e;  
-              } 
-            }
-        ],  
-        data:datas,  
-    });                                       
-});     */
-	$(document).ready(function () {
-	
+	$(document).ready(function() {
+
 		var comid = 6;
 		getPackage(comid);
 		$("#button").click(function() {
@@ -133,27 +67,92 @@ $(function () {
 				}
 			});
 		});
-		
-	});
- 
-	
-	
-	
-	
-	function getPackage(comid) {
- 	 $.post("getPackage",{"comid":comid},function(date){
-			var result = date.result;
-			var datas = [];
-			$.each(result,function(i,item){
-				datas[i]= {"promaname":result[i].promaname,"plat":result[i].plat
-						,"profun":result[i].profun,"promaid":result[i].promaid};
-			});
-			alert("1"); 
-			
- 	 });
-	
+
 	});
 
+	function getPackage(comid) {
+		$
+				.post(
+						"getPackage",
+						{
+							"comid" : comid
+						},
+						function(date) {
+							var result = date.result;
+							var datas = [];
+							$.each(result, function(i, item) {
+								datas[i] = {
+									"promaname" : result[i].promaname,
+									"plat" : result[i].plat,
+									"profun" : result[i].profun,
+									"promaid" : result[i].promaid
+									
+								};
+								
+							});
+							$("#reportTable")
+									.bootstrapTable(
+											{
+												method : "post",
+												cache : false,
+												height : 300,
+												striped : true,
+												pagination : true,
+												pageSize : 5,
+												pageNumber : 1,
+												pageList : [ 10, 20, 50, 100,
+														200, 500 ],
+												sidePagination : 'client',
+												exportTypes : [ 'csv', 'txt',
+														'xml' ],
+												clickToSelect : true,
+												columns : [
+														{	
+															
+															field : "promaname",
+															title : "程序包名称",
+															align : "center",
+															valign : "middle",
+															sortable : "true"
+														},
+														{
+															field : "plat",
+															title : "兼容平台",
+															align : "center",
+															valign : "middle",
+															sortable : "true"
+														},
+														{
+															field : "profun",
+															title : "功能简述",
+															align : "center",
+															valign : "middle",
+															sortable : "true"
+														},
+														{
+															title : "发布新版",
+															field : "promaid",
+															align : "center",
+															formatter : function(
+																	value, row,
+																	index) {
+																var e = '<a href="jsp/chengxunbangbenfabu.jsp"  onclick="onClick(\''+ value +'\')">进入</a> ';    
+																	
+																return e;
+															}
+														} ],
+												data : datas,
+											});
+
+						});
+
+	}
+	function onClick(data){
+		alert(data);
+	}
+	
+	
+	
 </script>
 </head>
 
@@ -197,17 +196,7 @@ $(function () {
 		<div class="heart1">
 			<table id="reportTable"
 				class="table table-bordered table-hover table-responsive">
-				<thead>
-					<tr>
-						<th style="width: 30%">程序包名称</th>
-						<th style="width: 20%">兼容平台</th>
-						<th style="width: 30%">功能简述</th>
-						<th style="width: 15%">发布新版</th>
-					</tr>
-				</thead>
-				<tbody id="tbody">
 
-				</tbody>
 			</table>
 		</div>
 
