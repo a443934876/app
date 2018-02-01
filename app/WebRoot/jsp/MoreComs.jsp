@@ -10,7 +10,7 @@
 <head>
 <base href="<%=basePath%>">
 <!-- 公司的选择页面 -->
-<title>ChooseCompany</title>
+<title>公司选择</title>
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="cache-control" content="no-cache">
 <meta http-equiv="expires" content="0">

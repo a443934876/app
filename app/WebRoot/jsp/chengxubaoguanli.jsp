@@ -71,88 +71,70 @@ thead {
 	});
 
 	function getPackage(comid) {
-		$
-				.post(
-						"getPackage",
-						{
-							"comid" : comid
-						},
-						function(date) {
-							var result = date.result;
-							var datas = [];
-							$.each(result, function(i, item) {
-								datas[i] = {
-									"promaname" : result[i].promaname,
-									"plat" : result[i].plat,
-									"profun" : result[i].profun,
-									"promaid" : result[i].promaid
-									
-								};
-								
-							});
-							$("#reportTable")
-									.bootstrapTable(
-											{
-												method : "post",
-												cache : false,
-												height : 300,
-												striped : true,
-												pagination : true,
-												pageSize : 5,
-												pageNumber : 1,
-												pageList : [ 10, 20, 50, 100,
-														200, 500 ],
-												sidePagination : 'client',
-												exportTypes : [ 'csv', 'txt',
-														'xml' ],
-												clickToSelect : true,
-												columns : [
-														{	
-															
-															field : "promaname",
-															title : "程序包名称",
-															align : "center",
-															valign : "middle",
-															sortable : "true"
-														},
-														{
-															field : "plat",
-															title : "兼容平台",
-															align : "center",
-															valign : "middle",
-															sortable : "true"
-														},
-														{
-															field : "profun",
-															title : "功能简述",
-															align : "center",
-															valign : "middle",
-															sortable : "true"
-														},
-														{
-															title : "发布新版",
-															field : "promaid",
-															align : "center",
-															formatter : function(
-																	value, row,
-																	index) {
-																var e = '<a href="jsp/chengxunbangbenfabu.jsp"  onclick="onClick(\''+ value +'\')">进入</a> ';    
-																	
-																return e;
-															}
-														} ],
-												data : datas,
-											});
+		$.post("getPackage", {
+			"packageid" : 0,
+			"comid" : comid,
 
-						});
+		}, function(date) {
+			var result = date.result;
+			var datas = [];
+			$.each(result, function(i, item) {
+				datas[i] = {
+					"promaname" : result[i].promaname,
+					"plat" : result[i].plat,
+					"profun" : result[i].profun,
+					"promaid" : result[i].promaid
+
+				};
+
+			});
+			$("#reportTable").bootstrapTable({
+				method : "post",
+				cache : false,
+				height : 250,
+				striped : true,
+				pagination : true,
+				pageSize : 5,
+				pageNumber : 1,
+				pageList : [ 10, 20, 50, 100, 200, 500 ],
+				sidePagination : 'client',
+				exportTypes : [ 'csv', 'txt', 'xml' ],
+				clickToSelect : true,
+				columns : [ {
+
+					field : "promaname",
+					title : "程序包名称",
+					align : "center",
+					valign : "middle",
+					sortable : "true"
+				}, {
+					field : "plat",
+					title : "兼容平台",
+					align : "center",
+					valign : "middle",
+					sortable : "true"
+				}, {
+					field : "profun",
+					title : "功能简述",
+					align : "center",
+					valign : "middle",
+					sortable : "true"
+				}, {
+					title : "发布新版",
+					field : "promaid",
+					align : "center",
+					formatter : function(value, row, index) {
+						sessionStorage.setItem("promaname", row.promaname);
+						sessionStorage.setItem("promaid", row.promaid);
+						return '<a href="jsp/chengxunbangbenfabu.jsp">进入</a> ';
+					}
+				} ],
+				data : datas,
+			});
+
+		});
 
 	}
-	function onClick(data){
-		alert(data);
-	}
-	
-	
-	
 </script>
 </head>
 
@@ -199,10 +181,6 @@ thead {
 
 			</table>
 		</div>
-
-
-
-
 	</div>
 
 </body>

@@ -123,8 +123,8 @@ input{border-radius:3px;border:1px solid #000;}
                  			  alert("上传失败请重新上传");
                  		  }else if(data.result=="success"){
                  			  alert("上传成功");
-                 			 var num=parent.document.getElementById("iframeId");
-                 			num.src="jsp/FileUpload.jsp";
+                 		/* 	 var num=parent.document.getElementById("iframeId");
+                 			num.src="jsp/FileUpload.jsp"; */
                  			 
                  		  }
                  	  }

@@ -39,14 +39,14 @@
 	float: left;
 }
 
-ul a {
+.nav a {
 	display: block;
 	text-decoration: none;
-	width: 100px;
-	height: 50px;
 	text-align: center;
 	line-height: 50px;
 	color: #C9E1F3;
+	width:100px;
+	height:50px;
 	background-color: #4399D8;
 }
 
@@ -92,7 +92,7 @@ h3 {
 			<li class="drop-down"><a href="jsp/index.jsp">帮助</a>
 				<ul class="drop-down-content">
 					<li><a href="jsp/head.jsp">版权说明</a></li>
-					<li><a href="jsp/Test.jsp">测试</a></li>
+					<li><a href="jsp/FileUpload.jsp">测试</a></li>
 				</ul></li>
 		</ul>
 	</div>

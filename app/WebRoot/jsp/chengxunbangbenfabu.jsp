@@ -1,7 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
 
@@ -20,8 +21,11 @@
 <!--
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
-<link href="css/h-ui/H-ui.login.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet"
+	href="js/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+
 <script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/My97DatePicker/WdatePicker.js"></script>
 <style type="text/css">
 .heart {
 	margin: 1px auto;
@@ -38,12 +42,12 @@
 	<div class="heart">
 		<div style="margin-left: 10px; padding-top: 10px;">
 			<div>
-				<span>程序包名称：</span> <span id="packageName">xxx</span>
+				<span>程序包名称：</span> <span id="packageName"></span>
 			</div>
 			<br>
 			<div>
 				<span>程序版本编号：</span> <input id="packageId" type="text"
-					style="width: 335px;" />
+					style="width: 410px;" />
 			</div>
 			<br>
 			<div>
@@ -53,7 +57,8 @@
 			</div>
 			<br>
 			<div>
-				<span>预备发布日期：</span> <input id="packageDate" type="text" />
+				<span>预备发布日期：</span> <input type="text" class="Wdate" id="d533"
+					onclick="d533_focus(this)" />
 			</div>
 			<br>
 			<div>
@@ -64,8 +69,8 @@
 				<span>扫描上传：</span>
 			</div>
 			<div>
-				<input type="file" style="float: left" /><input id="button"
-					type="button" value="上传"">
+				<input id="mFile" type="file" style="float: left" /> <input
+					id="button" type="button" value="上传" onclick="Upload()">
 			</div>
 			<br> <br>
 			<div>
@@ -74,39 +79,103 @@
 		</div>
 	</div>
 	<script type="text/javascript">
-		$("#button").click(function() {
-			alert($("input#packageForceUpdate:checkbox").is(":checked"));
+		function Upload() {
+			var formData = new FormData();
+			var fileName=$("#mFile")[0].files[0].name;
+			formData.append("file",$("#mFile")[0].files[0]);
+			formData.append("fileName",fileName);
+			$.ajax({
+				url : "upload",
+				
+				type : "POST",
+				data : formData,
+				async : true,
+				cache : false,
+				contentType : false,
+				processData : false,
+				success : function(returndata) {
+					alert(returndata.result);
+				},
+				error : function(returndata) {
+					alert(returndata);
+				}
+			});
 
-		});
-		
-		
-		
-		
-		$("#submit").click(function() {
-			if ($("#packageId").val() == "") {
-				alert("程序版本编号不能为空");
-				return;
-			} else if ($("#packageUpdateDetails").val() == "") {
-				alert("更新修改功能不能为空");
-				return;
-			} else if ($("#packageDate").val() == "") {
-				alert("预备发布日期不能为空");
-				return;
-			} else {
-				$.post("addPackageVersion", {
-					"packageName" : $("packageName").val(),
-					"packageId" : $("packageId").val(),
-					"packageUpdateDetails" : $("packageUpdateDetails").val(),
-					"packageDate" : $("packageDate").val(),
-					"packageForceUpdate" : $("input#packageForceUpdate:checkbox").is(":checked")}
-				, function(data){
-						alert("1");
-					});
-					
-					}
-				});
-		
-		
+		}
+
+		var time = "";
+		function d533_focus(element) {
+
+			var onpickedFunc = function() {
+				time = $dp.cal.getDateStr();
+			};
+
+			WdatePicker({
+				position : {
+					top : 'above'
+				},
+				el : element,
+				onpicked : onpickedFunc
+			});
+
+		}
+		$(document)
+				.ready(
+						function() {
+
+							var promaname = sessionStorage.getItem("promaname");
+							var promaid = sessionStorage.getItem("promaid");
+
+							$("#packageName").html(promaname);
+
+							$("#button").click(function() {
+								alert(time);
+
+							});
+
+							$("#submit")
+									.click(
+											function() {
+												if ($("#packageId").val() == "") {
+													alert("程序版本编号不能为空");
+													return;
+												} else if ($(
+														"#packageUpdateDetails")
+														.val() == "") {
+													alert("更新修改功能不能为空");
+													return;
+												} else if ($("#packageDate")
+														.val() == "") {
+													alert("预备发布日期不能为空");
+													return;
+												} else {
+													$
+															.post(
+																	"addPackageVersion",
+																	{
+																		"packageName" : $(
+																				"packageName")
+																				.val(),
+																		"packageId" : $(
+																				"packageId")
+																				.val(),
+																		"packageUpdateDetails" : $(
+																				"packageUpdateDetails")
+																				.val(),
+																		"packageDate" : time,
+																		"packageForceUpdate" : $(
+																				"input#packageForceUpdate:checkbox")
+																				.is(
+																						":checked")
+																	},
+																	function(
+																			data) {
+																		alert("1");
+																	});
+
+												}
+											});
+						});
 	</script>
 
 

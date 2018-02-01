@@ -361,6 +361,19 @@ public class GovernController {
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@RequestMapping("getIntelligentdocument")
 	@Transactional(rollbackFor = Exception.class)
 	public ModelAndView getIntelligentdocument(String Emid,String InfoID)throws Exception{

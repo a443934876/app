@@ -1,40 +1,52 @@
 package com.great.controller;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.kobjects.base64.Base64;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.great.util.AuthCode;
 import com.great.util.WebServiceUtil;
 
 /**
- * ÓÃ»§µÄ²Ù×÷¹ÜÀí
+ * ç”¨æˆ·çš„æ“ä½œç®¡ç†
  * 
  */
 @Controller
 public class UserController {
 
-	private String imgCode = "";// ´æÑéÖ¤ÂëÄÚÈİ
+	private String imgCode = "";// å­˜éªŒè¯ç å†…å®¹
 
 	@RequestMapping("login")
 	@ResponseBody
-	public Map<String, Object> login(@RequestParam Map<String, String> map, HttpSession session) throws Exception {
+	public Map<String, Object> login(@RequestParam Map<String, String> map,
+			HttpSession session) throws Exception {
 		/**
-		 * ÓÃ»§µÇÂ½ÑéÖ¤
+		 * ç”¨æˆ·ç™»é™†éªŒè¯
 		 */
 		Map<String, Object> backMap = new HashMap<>();
 		String nike = map.get("nike");
@@ -43,7 +55,8 @@ public class UserController {
 		Object[] value = { nike, "", "", pwd, -1 };
 		ArrayList<HashMap<String, Object>> resultArrayList;
 		try {
-			resultArrayList = WebServiceUtil.getWebServiceMsg(key, value, "getSinglePersonalUserFromLogin",
+			resultArrayList = WebServiceUtil.getWebServiceMsg(key, value,
+					"getSinglePersonalUserFromLogin",
 					WebServiceUtil.HUIWEI_URL, WebServiceUtil.HUIWEI_NAMESPACE);
 			String ret = (String) resultArrayList.get(0).get("ret");
 			if (ret.equals("-1")) {
@@ -52,11 +65,11 @@ public class UserController {
 			}
 			if (ret.equals("0")) {
 				backMap.put("result", "success");
-				// ·µ»Ø0±íÊ¾µÇÂ½³É¹¦£¬½«ÓÃ»§µÄid´æÆğÀ´
+				// è¿”å›0è¡¨ç¤ºç™»é™†æˆåŠŸï¼Œå°†ç”¨æˆ·çš„idå­˜èµ·æ¥
 				if (((String) resultArrayList.get(0).get("ret")).equals("0")) {
 					String Uid = (String) resultArrayList.get(0).get("Uid");
 					String peoid = (String) resultArrayList.get(0).get("peoid");
-					String name = (String) resultArrayList.get(0).get("ĞÕÃû");
+					String name = (String) resultArrayList.get(0).get("å§“å");
 					session.setAttribute("Uid", Uid);
 					session.setAttribute("PUserID", peoid);
 					session.setAttribute("nike", nike);
@@ -75,7 +88,7 @@ public class UserController {
 		return backMap;
 	}
 
-	// µÇÂ½Ê±»ñÈ¡ÑéÖ¤ÂëÊ¹ÓÃ
+	// ç™»é™†æ—¶è·å–éªŒè¯ç ä½¿ç”¨
 	@RequestMapping("imgCode")
 	@ResponseBody
 	@Transactional(rollbackFor = Exception.class)
@@ -86,7 +99,7 @@ public class UserController {
 		BufferedImage image = AuthCode.getAuthImg(imgCode);
 
 		try {
-			// Ğ´Èë¶ÔÓ¦img±êÇ©ÉÏ£¬ÏÔÊ¾³öÀ´
+			// å†™å…¥å¯¹åº”imgæ ‡ç­¾ä¸Šï¼Œæ˜¾ç¤ºå‡ºæ¥
 			ImageIO.write(image, "JPEG", response.getOutputStream());
 		} catch (IOException e) {
 
@@ -94,18 +107,20 @@ public class UserController {
 		}
 	}
 
-	// »ñÈ¡ÓÃ»§µÇÂ¼ºó¹«Ë¾ĞÅÏ¢µÄÑ¡Ôñ
+	// è·å–ç”¨æˆ·ç™»å½•åå…¬å¸ä¿¡æ¯çš„é€‰æ‹©
 	@RequestMapping("getCompany")
 	@ResponseBody
-	public Map<String, Object> getCompany(String personId, HttpSession session) throws Exception {
+	public Map<String, Object> getCompany(String personId, HttpSession session)
+			throws Exception {
 
 		String[] key = { "uPersonalID", "sState" };
-		Object[] value = { personId, "ÔÚÖ°" };
+		Object[] value = { personId, "åœ¨èŒ" };
 		ArrayList<HashMap<String, Object>> resultArrayList;
 
-		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value, "getMoreComs", WebServiceUtil.HUIWEI_URL,
+		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value,
+				"getMoreComs", WebServiceUtil.HUIWEI_URL,
 				WebServiceUtil.HUIWEI_NAMESPACE);
-		// ·µ»Øµ½Ç°¶ËµÄ¼¯ºÏ
+		// è¿”å›åˆ°å‰ç«¯çš„é›†åˆ
 		ArrayList<Object> backList = new ArrayList<Object>();
 		for (int i = 0; i < resultArrayList.size(); i++) {
 
@@ -117,10 +132,14 @@ public class UserController {
 			backList.add(map);
 		}
 		if (resultArrayList.size() == 1) {
-			session.setAttribute("Emid", (String) resultArrayList.get(0).get("Emid"));
-			session.setAttribute("orgidstr", (String) resultArrayList.get(0).get("orgidstr"));
-			session.setAttribute("orgname", (String) resultArrayList.get(0).get("orgname"));
-			session.setAttribute("comid", (String) resultArrayList.get(0).get("comid"));
+			session.setAttribute("Emid",
+					(String) resultArrayList.get(0).get("Emid"));
+			session.setAttribute("orgidstr", (String) resultArrayList.get(0)
+					.get("orgidstr"));
+			session.setAttribute("orgname", (String) resultArrayList.get(0)
+					.get("orgname"));
+			session.setAttribute("comid",
+					(String) resultArrayList.get(0).get("comid"));
 		}
 		Map<String, Object> backMap = new HashMap<String, Object>();
 		backMap.put("result", backList);
@@ -128,119 +147,132 @@ public class UserController {
 
 	}
 
-	// ²éÑ¯°æ±¾
+	// æŸ¥è¯¢ç‰ˆæœ¬
 	@RequestMapping("getNewPackageVersion")
 	@ResponseBody
-	public Map<String, Object> getNewPackageVersion(String comid) throws Exception {
+	public Map<String, Object> getNewPackageVersion(String comid)
+			throws Exception {
 
 		String[] key = { "packageid", "comid" };
-		Object[] value = { 0, comid};
+		Object[] value = { 0, comid };
 		ArrayList<HashMap<String, Object>> resultArrayList;
 
-		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value, "getNewPackageVersion",
-				WebServiceUtil.HUIWEI_PM_URL, WebServiceUtil.HUIWEI_PM_NAMESPACE);
-		// ·µ»Øµ½Ç°¶ËµÄ¼¯ºÏ
+		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value,
+				"getNewPackageVersion", WebServiceUtil.HUIWEI_PM_URL,
+				WebServiceUtil.HUIWEI_PM_NAMESPACE);
+		// è¿”å›åˆ°å‰ç«¯çš„é›†åˆ
 		ArrayList<Object> backList = new ArrayList<Object>();
 		for (int i = 0; i < resultArrayList.size(); i++) {
 			Map<String, String> map = new HashMap<String, String>();
 			System.out.println(resultArrayList.get(i).toString());
 			String date = (String) resultArrayList.get(i).get("pubdate");
 			String newdate;
-			if(date.indexOf("T")>-1) {
+			if (date.indexOf("T") > -1) {
 				newdate = date.substring(0, date.indexOf("T"));
-			}else {
+			} else {
 				newdate = date;
 			}
-			
+
 			map.put("proname", (String) resultArrayList.get(i).get("proname"));
 			map.put("pubdate", newdate);
 			backList.add(map);
 		}
-		
+
 		Map<String, Object> backMap = new HashMap<String, Object>();
 		backMap.put("result", backList);
 		return backMap;
 
 	}
+
 	// getPackage
-		@RequestMapping("getPackage")
-		@ResponseBody
-		public Map<String, Object> getPackage(String comid) throws Exception {
+	@RequestMapping("getPackage")
+	@ResponseBody
+	public Map<String, Object> getPackage(String packageid, String comid)
+			throws Exception {
 
-			String[] key = { "packageid","packagename", "comid" };
-			Object[] value = { 0, "",comid};
-			ArrayList<HashMap<String, Object>> resultArrayList;
+		String[] key = { "packageid", "packagename", "comid" };
+		Object[] value = { packageid, "", comid };
+		ArrayList<HashMap<String, Object>> resultArrayList;
 
-			resultArrayList = WebServiceUtil.getWebServiceMsg(key, value, "getPackage",
-					WebServiceUtil.HUIWEI_PM_URL, WebServiceUtil.HUIWEI_PM_NAMESPACE);
-			// ·µ»Øµ½Ç°¶ËµÄ¼¯ºÏ
-			ArrayList<Object> backList = new ArrayList<Object>();
-			for (int i = 0; i < resultArrayList.size(); i++) {
-				Map<String, String> map = new HashMap<String, String>();
-				map.put("promaid", (String) resultArrayList.get(i).get("promaid"));
-				map.put("promaname", (String) resultArrayList.get(i).get("promaname"));
-				map.put("profun", (String) resultArrayList.get(i).get("profun"));
-				map.put("plat", (String) resultArrayList.get(i).get("plat"));
-				backList.add(map);
-			}
-			
-			Map<String, Object> backMap = new HashMap<String, Object>();
-			backMap.put("result", backList);
-			return backMap;
-
-		}
-		// addPackage
-		@RequestMapping("addPackage")
-		@ResponseBody
-		public String addPackage(@RequestParam Map<String, String> map) throws Exception {
-			String packageName = map.get("packageName");
-			String funDetail = map.get("funDetail");
-			String plat = map.get("plat");
-			String comid = map.get("comid");
-			String[] key = { "packageName","funDetail","plat", "comid" };
-			Object[] value = { packageName, funDetail,plat,comid};
-			ArrayList<HashMap<String, Object>> resultArrayList;
-
-			resultArrayList = WebServiceUtil.getWebServiceMsg(key, value, "addPackage",
-					WebServiceUtil.HUIWEI_PM_URL, WebServiceUtil.HUIWEI_PM_NAMESPACE);
-			
-			
-			
-			String result= (String) resultArrayList.get(0).get(0);
-			return result;
-
+		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value,
+				"getPackage", WebServiceUtil.HUIWEI_PM_URL,
+				WebServiceUtil.HUIWEI_PM_NAMESPACE);
+		// è¿”å›åˆ°å‰ç«¯çš„é›†åˆ
+		ArrayList<Object> backList = new ArrayList<Object>();
+		for (int i = 0; i < resultArrayList.size(); i++) {
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("promaid", (String) resultArrayList.get(i).get("promaid"));
+			map.put("promaname",
+					(String) resultArrayList.get(i).get("promaname"));
+			map.put("profun", (String) resultArrayList.get(i).get("profun"));
+			map.put("plat", (String) resultArrayList.get(i).get("plat"));
+			backList.add(map);
 		}
 
-	// Ôö¼Óapp
+		Map<String, Object> backMap = new HashMap<String, Object>();
+		backMap.put("result", backList);
+		return backMap;
+
+	}
+
+	// addPackage
+	@RequestMapping("addPackage")
+	@ResponseBody
+	public String addPackage(@RequestParam Map<String, String> map)
+			throws Exception {
+		String packageName = map.get("packageName");
+		String funDetail = map.get("funDetail");
+		String plat = map.get("plat");
+		String comid = map.get("comid");
+		String[] key = { "packageName", "funDetail", "plat", "comid" };
+		Object[] value = { packageName, funDetail, plat, comid };
+		ArrayList<HashMap<String, Object>> resultArrayList;
+
+		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value,
+				"addPackage", WebServiceUtil.HUIWEI_PM_URL,
+				WebServiceUtil.HUIWEI_PM_NAMESPACE);
+
+		String result = (String) resultArrayList.get(0).get(0);
+		return result;
+
+	}
+
+	// å¢åŠ app
 	@RequestMapping("addPackageVersion")
 	@ResponseBody
-	public Map<String, Object> addPackageVersion(String personId, HttpSession session) throws Exception {
+	public Map<String, Object> addPackageVersion(String promaid,
+			HttpSession session) throws Exception {
 
-		String[] key = { "puhdate", "ver", "packageid", "modifyDetail", "filepath", "ismust" };
+		String[] key = { "puhdate", "ver", "packageid", "modifyDetail",
+				"filepath", "ismust" };
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		System.out.println(formatter.format(new Date()));
 		String SendTime = formatter.format(new Date());
-		//Ñ¡ÔñÈÕÆÚ
-		Object[] value = { SendTime, "20170115.1.1", 1, "ĞÂÔö³ÌĞò°ü", "", true };
+		// é€‰æ‹©æ—¥æœŸ
+		Object[] value = { SendTime, "20170115.1.1", promaid, "æ–°å¢ç¨‹åºåŒ…", "", true };
 		ArrayList<HashMap<String, Object>> resultArrayList;
 
-		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value, "addPackageVersion", WebServiceUtil.HUIWEI_PM_URL,
+		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value,
+				"addPackageVersion", WebServiceUtil.HUIWEI_PM_URL,
 				WebServiceUtil.HUIWEI_PM_NAMESPACE);
 		System.out.println(resultArrayList);
-		// ·µ»Øµ½Ç°¶ËµÄ¼¯ºÏ
+		// è¿”å›åˆ°å‰ç«¯çš„é›†åˆ
 		ArrayList<Object> backList = new ArrayList<Object>();
 		for (int i = 0; i < resultArrayList.size(); i++) {
 
 			Map<String, String> map = new HashMap<String, String>();
 			map.put("Emids", (String) resultArrayList.get(i).get("Emid"));
 			map.put("comname", (String) resultArrayList.get(i).get("comname"));
-			
+
 			backList.add(map);
 		}
 		if (resultArrayList.size() == 1) {
-			session.setAttribute("Emid", (String) resultArrayList.get(0).get("Emid"));
-			session.setAttribute("orgidstr", (String) resultArrayList.get(0).get("orgidstr"));
-			session.setAttribute("orgname", (String) resultArrayList.get(0).get("orgname"));
+			session.setAttribute("Emid",
+					(String) resultArrayList.get(0).get("Emid"));
+			session.setAttribute("orgidstr", (String) resultArrayList.get(0)
+					.get("orgidstr"));
+			session.setAttribute("orgname", (String) resultArrayList.get(0)
+					.get("orgname"));
 		}
 		Map<String, Object> backMap = new HashMap<String, Object>();
 		backMap.put("result", backList);
@@ -248,10 +280,46 @@ public class UserController {
 
 	}
 
-	// »ñÈ¡ÓÃ»§µÇÂ¼ºó¹«Ë¾ĞÅÏ¢µÄÑ¡Ôñ
+	// ä¸Šä¼ æ–‡ä»¶
+	@RequestMapping(value="upload")
+	@ResponseBody
+	@Transactional(rollbackFor = Exception.class)
+	public String upload(HttpServletRequest request)
+			throws Exception {
+
+		
+
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+
+		String saveFilePath = "";
+
+		MultipartFile file = multipartRequest.getFile("file");
+		String backStr = "";
+		if (file != null) {
+			String fileName = request.getParameter("fileName");
+			InputStream input = file.getInputStream();
+			byte[] data = new byte[input.available()];
+			input.read(data);
+			input.close();
+			String baseString = Base64.encode(data);
+			String[] key = { "fileBytesstr", "fileName" };
+			Object[] value = { baseString, fileName };
+			backStr = WebServiceUtil.putWebServiceMsg(key, value, "UploadFile",
+					WebServiceUtil.URL);
+			String filePath = backStr + ";";
+			filePath = WebServiceUtil.UPLOADSPACE
+					+ filePath.substring(2, filePath.length());
+			saveFilePath = saveFilePath + filePath;
+			System.out.println(saveFilePath);
+		}
+		return saveFilePath;
+	}
+
+	// è·å–ç”¨æˆ·ç™»å½•åå…¬å¸ä¿¡æ¯çš„é€‰æ‹©
 	@RequestMapping("GoIndexPage")
 	@Transactional(rollbackFor = Exception.class)
-	public ModelAndView GoIndexPage(String Emid, HttpSession session) throws Exception {
+	public ModelAndView GoIndexPage(String Emid, HttpSession session)
+			throws Exception {
 
 		ModelAndView modelAndView = new ModelAndView("index");
 		System.out.println(Emid);
@@ -262,72 +330,114 @@ public class UserController {
 
 	}
 
-	// »ñÈ¡ÓÃ»§µÇÂ¼ºó¹«Ë¾ĞÅÏ¢µÄÑ¡Ôñ(¹«ÎÄ±êÌâ£¬Õû¸ÄÄÚÈİµÈ)
+	@RequestMapping("fileupload")
+	public void fileupload(HttpServletRequest request,
+			HttpServletResponse response, String loginName) throws Exception {
+		// è·å–æœåŠ¡å™¨ä¸­ä¿å­˜æ–‡ä»¶çš„è·¯å¾„
+		String path = request.getSession().getServletContext().getRealPath("")
+				+ "\\upload\\record\\";
+		System.out.println(path);
+		// è·å–è§£æå™¨
+		CommonsMultipartResolver resolver = new CommonsMultipartResolver(
+				request.getSession().getServletContext());
+		// åˆ¤æ–­æ˜¯å¦æ˜¯æ–‡ä»¶
+		if (resolver.isMultipart(request)) {
+			// è¿›è¡Œè½¬æ¢
+			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) (request);
+			// è·å–æ‰€æœ‰æ–‡ä»¶åç§°
+			Iterator<String> it = multiRequest.getFileNames();
+			while (it.hasNext()) {
+				// æ ¹æ®æ–‡ä»¶åç§°å–æ–‡ä»¶
+				MultipartFile file = multiRequest.getFile(it.next());
+				String fileName = file.getOriginalFilename();
+				String localPath = path + fileName;
+				// åˆ›å»ºä¸€ä¸ªæ–°çš„æ–‡ä»¶å¯¹è±¡ï¼Œåˆ›å»ºæ—¶éœ€è¦ä¸€ä¸ªå‚æ•°ï¼Œå‚æ•°æ˜¯æ–‡ä»¶æ‰€éœ€è¦ä¿å­˜çš„ä½ç½®
+				File newFile = new File(localPath);
+				// ä¸Šä¼ çš„æ–‡ä»¶å†™å…¥åˆ°æŒ‡å®šçš„æ–‡ä»¶ä¸­
+				file.transferTo(newFile);
+			}
+		}
+	}
+
+	// è·å–ç”¨æˆ·ç™»å½•åå…¬å¸ä¿¡æ¯çš„é€‰æ‹©(å…¬æ–‡æ ‡é¢˜ï¼Œæ•´æ”¹å†…å®¹ç­‰)
 	@RequestMapping("getGovern")
 	@Transactional(rollbackFor = Exception.class)
-	public ModelAndView getGovern(String Emid, HttpSession session) throws Exception {
+	public ModelAndView getGovern(String Emid, HttpSession session)
+			throws Exception {
 		int emid = new Integer(Emid).intValue();
 
 		ModelAndView modelAndView = new ModelAndView("Govern");
 
-		String[] key1 = { "Emid", "DayCount", "TopCount", "InfoID", "viewed" };// »ñÈ¡¹«ÎÄkey
+		String[] key1 = { "Emid", "DayCount", "TopCount", "InfoID", "viewed" };// è·å–å…¬æ–‡key
 		Object[] value1 = { emid, 365, 20, 0, false };
-		String[] key2 = { "uEmid", "isFinished", "isReviewed", "cStart", "cEnd", "hgrade", "areaRangeID", "industryStr",
-				"objOrgName" };// »ñÈ¡Õû¸ÄĞÅÏ¢key
-		// »ñÈ¡ÒÔÇ°µÄÊ±¼ä
+		String[] key2 = { "uEmid", "isFinished", "isReviewed", "cStart",
+				"cEnd", "hgrade", "areaRangeID", "industryStr", "objOrgName" };// è·å–æ•´æ”¹ä¿¡æ¯key
+		// è·å–ä»¥å‰çš„æ—¶é—´
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		c.setTime(new Date());
 		c.add(Calendar.YEAR, -1);
 		Date y = c.getTime();
 		String year = format.format(y);
-		// »ñÈ¡ÏÖÔÚµÄÊ±¼ä
+		// è·å–ç°åœ¨çš„æ—¶é—´
 		String now = format.format(new Date());
 
-		Object[] value2 = { emid, 2, 0, year, now, "", 0, "", (String) session.getAttribute("orgname") };
+		Object[] value2 = { emid, 2, 0, year, now, "", 0, "",
+				(String) session.getAttribute("orgname") };
 		ArrayList<HashMap<String, Object>> resultArrayList1;
 		ArrayList<HashMap<String, Object>> resultArrayList2;
 		ArrayList<Map<String, String>> TitleList = new ArrayList<Map<String, String>>();
 		ArrayList<Map<String, String>> GovernList = new ArrayList<Map<String, String>>();
-		// »ñÈ¡¹«ÎÄĞÅÏ¢±êÌâ
-		resultArrayList1 = WebServiceUtil.getWebServiceMsg(key1, value1, "getWebInformFroEmID",
-				WebServiceUtil.HUIWEI_INFO, WebServiceUtil.HUIWEI_NAMESPACE);
+		// è·å–å…¬æ–‡ä¿¡æ¯æ ‡é¢˜
+		resultArrayList1 = WebServiceUtil.getWebServiceMsg(key1, value1,
+				"getWebInformFroEmID", WebServiceUtil.HUIWEI_INFO,
+				WebServiceUtil.HUIWEI_NAMESPACE);
 
 		for (int i = 0; i < resultArrayList1.size(); i++) {
 			Map<String, String> map = new HashMap<String, String>();
-			map.put("InfoID", (String) resultArrayList1.get(i).get("InfoID"));// ¹«ÎÄid
-			map.put("InfoTitle", (String) resultArrayList1.get(i).get("InfoTitle"));// ¹«ÎÄ±êÌâ
-			map.put("CDocID", (String) resultArrayList1.get(i).get("CDocID"));// ¹ØÁªµÄÖÇÄÜÎÄµµ
-			map.put("InfoWriter", (String) resultArrayList1.get(i).get("InfoWriter"));// ×«Ğ´ÈËÔ±ĞÕÃû
-			map.put("InfoNumber", (String) resultArrayList1.get(i).get("InfoNumber"));// ¹«ÎÄ±êºÅ
-			map.put("PubDate", (String) resultArrayList1.get(i).get("PubDate"));// ¹«ÎÄ·¢²¼ÈÕÆÚ
-			map.put("PubComname", (String) resultArrayList1.get(i).get("PubComname"));// ·¢²¼µ¥Î»¼ò³Æ
-			map.put("puborgname", (String) resultArrayList1.get(i).get("puborgname"));// ·¢²¼µ¥Î»È«³Æ
-			map.put("pubobj", (String) resultArrayList1.get(i).get("pubobj"));// ·¢²¼¶ÔÏó
-			map.put("Emid", Emid);// ·¢²¼¶ÔÏó
+			map.put("InfoID", (String) resultArrayList1.get(i).get("InfoID"));// å…¬æ–‡id
+			map.put("InfoTitle",
+					(String) resultArrayList1.get(i).get("InfoTitle"));// å…¬æ–‡æ ‡é¢˜
+			map.put("CDocID", (String) resultArrayList1.get(i).get("CDocID"));// å…³è”çš„æ™ºèƒ½æ–‡æ¡£
+			map.put("InfoWriter",
+					(String) resultArrayList1.get(i).get("InfoWriter"));// æ’°å†™äººå‘˜å§“å
+			map.put("InfoNumber",
+					(String) resultArrayList1.get(i).get("InfoNumber"));// å…¬æ–‡æ ‡å·
+			map.put("PubDate", (String) resultArrayList1.get(i).get("PubDate"));// å…¬æ–‡å‘å¸ƒæ—¥æœŸ
+			map.put("PubComname",
+					(String) resultArrayList1.get(i).get("PubComname"));// å‘å¸ƒå•ä½ç®€ç§°
+			map.put("puborgname",
+					(String) resultArrayList1.get(i).get("puborgname"));// å‘å¸ƒå•ä½å…¨ç§°
+			map.put("pubobj", (String) resultArrayList1.get(i).get("pubobj"));// å‘å¸ƒå¯¹è±¡
+			map.put("Emid", Emid);// å‘å¸ƒå¯¹è±¡
 			String state = (String) resultArrayList1.get(i).get("viewed");
-			if (state.equals("0")) {// Î´ÔÄ
-				map.put("state", "Î´ÔÄ");
+			if (state.equals("0")) {// æœªé˜…
+				map.put("state", "æœªé˜…");
 			} else {
-				map.put("state", "ÒÑÔÄ");
+				map.put("state", "å·²é˜…");
 			}
 			TitleList.add(map);
 		}
 
-		// »ñÈ¡Õû¸ÄĞÅÏ¢
-		resultArrayList2 = WebServiceUtil.getWebServiceMsg(key2, value2, "getAllHiddenIllness",
-				WebServiceUtil.HUIWEI_SAFE_URL, WebServiceUtil.HUIWEI_NAMESPACE);
+		// è·å–æ•´æ”¹ä¿¡æ¯
+		resultArrayList2 = WebServiceUtil.getWebServiceMsg(key2, value2,
+				"getAllHiddenIllness", WebServiceUtil.HUIWEI_SAFE_URL,
+				WebServiceUtil.HUIWEI_NAMESPACE);
 		for (int i = 0; i < resultArrayList2.size(); i++) {
 			Map<String, String> map2 = new HashMap<String, String>();
 
-			map2.put("hTroubleID", (String) resultArrayList2.get(i).get("hTroubleID"));// Òş»¼id
-			map2.put("safetyTrouble", (String) resultArrayList2.get(i).get("safetyTrouble"));// Òş»¼ÃèÊö
-			map2.put("actionOrgName", (String) resultArrayList2.get(i).get("actionOrgName"));// ÁÙ¼ìµ¥Î»Ãû³Æ
-			String checkDate = (String) resultArrayList2.get(i).get("checkDate");
+			map2.put("hTroubleID",
+					(String) resultArrayList2.get(i).get("hTroubleID"));// éšæ‚£id
+			map2.put("safetyTrouble",
+					(String) resultArrayList2.get(i).get("safetyTrouble"));// éšæ‚£æè¿°
+			map2.put("actionOrgName",
+					(String) resultArrayList2.get(i).get("actionOrgName"));// ä¸´æ£€å•ä½åç§°
+			String checkDate = (String) resultArrayList2.get(i)
+					.get("checkDate");
 			if (checkDate != null && !checkDate.equals("")) {
 				int cutNum = checkDate.lastIndexOf("T");
 				checkDate = checkDate.substring(0, cutNum);
-				map2.put("checkDate", checkDate);// ÈÕÆÚ
+				map2.put("checkDate", checkDate);// æ—¥æœŸ
 			}
 			GovernList.add(map2);
 		}
@@ -339,7 +449,7 @@ public class UserController {
 
 	}
 
-	// ÑéÖ¤ĞÂÓÃ»§ÃûÊÇ·ñ¿ÉÒÔÓÃ
+	// éªŒè¯æ–°ç”¨æˆ·åæ˜¯å¦å¯ä»¥ç”¨
 	@RequestMapping("verifyName")
 	@ResponseBody
 	@Transactional(rollbackFor = Exception.class)
@@ -351,23 +461,26 @@ public class UserController {
 
 		Object[] value = { newName, "", "", "" };
 
-		ArrayList<HashMap<String, Object>> resultList = WebServiceUtil.getWebServiceMsg(key, value,
-				"getSinglePersonalUserFromLogin", WebServiceUtil.HUIWEI_URL, WebServiceUtil.HUIWEI_NAMESPACE);
+		ArrayList<HashMap<String, Object>> resultList = WebServiceUtil
+				.getWebServiceMsg(key, value, "getSinglePersonalUserFromLogin",
+						WebServiceUtil.HUIWEI_URL,
+						WebServiceUtil.HUIWEI_NAMESPACE);
 		String ret = ((String) resultList.get(0).get("ret"));
 		if (ret.equals("0")) {
-			backMap.put("result", "lose");// ÒÑ´æÔÚ
+			backMap.put("result", "lose");// å·²å­˜åœ¨
 		} else {
-			backMap.put("result", "suc");// ¿ÉÒÔÊ¹ÓÃ
+			backMap.put("result", "suc");// å¯ä»¥ä½¿ç”¨
 		}
 		return backMap;
 
 	}
 
-	// ĞŞ¸ÄÓÃ»§Ãû
+	// ä¿®æ”¹ç”¨æˆ·å
 	@RequestMapping("userSetMessage")
 	@ResponseBody
 	@Transactional(rollbackFor = Exception.class)
-	public Map<String, String> userSetMessage(@RequestParam Map<String, String> map, HttpSession session)
+	public Map<String, String> userSetMessage(
+			@RequestParam Map<String, String> map, HttpSession session)
 			throws Exception {
 
 		Map<String, String> backMap = new HashMap<String, String>();
@@ -386,37 +499,46 @@ public class UserController {
 
 		Object[] value = { name, "", "", oldpwd, -1 };
 
-		ArrayList<HashMap<String, Object>> resultList = WebServiceUtil.getWebServiceMsg(key, value,
-				"getSinglePersonalUserFromLogin", WebServiceUtil.HUIWEI_URL, WebServiceUtil.HUIWEI_NAMESPACE);
-		// System.out.println("½á¹û¼¯"+resultList.size());
+		ArrayList<HashMap<String, Object>> resultList = WebServiceUtil
+				.getWebServiceMsg(key, value, "getSinglePersonalUserFromLogin",
+						WebServiceUtil.HUIWEI_URL,
+						WebServiceUtil.HUIWEI_NAMESPACE);
+		// System.out.println("ç»“æœé›†"+resultList.size());
 		String ret = ((String) resultList.get(0).get("ret"));
-		if (ret.equals("0")) {// ´íÎó
+		if (ret.equals("0")) {// é”™è¯¯
 			backMap.put("result", "lose");
 			return backMap;
 		} else {
 			String[] key2 = { "requestName", "mphone", "email", "pwd", "ret" };
-			Object[] value2 = { (String) session.getAttribute("nike"), "", "", oldpwd, -1 };
+			Object[] value2 = { (String) session.getAttribute("nike"), "", "",
+					oldpwd, -1 };
 			ArrayList<HashMap<String, Object>> resultArrayList2;
 
-			resultArrayList2 = WebServiceUtil.getWebServiceMsg(key2, value2, "getSinglePersonalUserFromLogin",
+			resultArrayList2 = WebServiceUtil.getWebServiceMsg(key2, value2,
+					"getSinglePersonalUserFromLogin",
 					WebServiceUtil.HUIWEI_URL, WebServiceUtil.HUIWEI_NAMESPACE);
-			if (resultArrayList2.size() == 0) {// ÃÜÂë´íÎó
+			if (resultArrayList2.size() == 0) {// å¯†ç é”™è¯¯
 				backMap.put("result", "misspwd");
 				return backMap;
 			}
 
-			String[] key3 = { "uPeopleID", "oldPWord", "newPWord", "newNickName", "uState", "setSysUser", "mPhone" };
+			String[] key3 = { "uPeopleID", "oldPWord", "newPWord",
+					"newNickName", "uState", "setSysUser", "mPhone" };
 			String valString = (String) session.getAttribute("PUserID");
 
-			Object[] value3 = { new Integer(valString).intValue(), oldpwd, newpwd, name, true, true, phone };
-			// Object[] value3 = { 47867,"110868", "654321","zhangbaoliang",true,true,""};
-			ArrayList<HashMap<String, Object>> resultList5 = WebServiceUtil.getWebServiceMsg(key3, value3,
-					"setPersonalUser", WebServiceUtil.HUIWEI_URL, WebServiceUtil.HUIWEI_NAMESPACE);
+			Object[] value3 = { new Integer(valString).intValue(), oldpwd,
+					newpwd, name, true, true, phone };
+			// Object[] value3 = { 47867,"110868",
+			// "654321","zhangbaoliang",true,true,""};
+			ArrayList<HashMap<String, Object>> resultList5 = WebServiceUtil
+					.getWebServiceMsg(key3, value3, "setPersonalUser",
+							WebServiceUtil.HUIWEI_URL,
+							WebServiceUtil.HUIWEI_NAMESPACE);
 			if (resultList5.size() > 0) {
 
 				System.err.println(resultList5.get(0).toString());
 			} else {
-				System.err.println("Ã»ÓĞ½á¹û¼¯");
+				System.err.println("æ²¡æœ‰ç»“æœé›†");
 			}
 		}
 
