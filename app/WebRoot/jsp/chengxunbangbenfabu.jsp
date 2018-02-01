@@ -46,14 +46,14 @@
 			</div>
 			<br>
 			<div>
-				<span>程序版本编号：</span> <input id="packageId" type="text"
+				<span>程序版本编号：</span> <input id="ver" type="text"
 					style="width: 410px;" />
 			</div>
 			<br>
 			<div>
 				<span>更新修改功能：</span>
-				<textarea id="packageUpdateDetails" style="vertical-align: top;"
-					rows="5" cols="65"></textarea>
+				<textarea id="modifyDetail" style="vertical-align: top;" rows="5"
+					cols="65"></textarea>
 			</div>
 			<br>
 			<div>
@@ -62,7 +62,7 @@
 			</div>
 			<br>
 			<div>
-				<span>是否强制升级：</span> <input id="packageForceUpdate" type="checkbox" />
+				<span>是否强制升级：</span> <input id="ismust" type="checkbox" />
 			</div>
 			<br>
 			<div style="float: left">
@@ -70,7 +70,8 @@
 			</div>
 			<div>
 				<input id="mFile" type="file" style="float: left" /> <input
-					id="button" type="button" value="上传" onclick="Upload()">
+					id="button" type="button" value="上传" onclick="Upload()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+					id="tag">文件未上传</span>
 			</div>
 			<br> <br>
 			<div>
@@ -79,37 +80,43 @@
 		</div>
 	</div>
 	<script type="text/javascript">
+		var puhdate = "";
+		var filepath = "";
 		function Upload() {
 			var formData = new FormData();
-			var fileName=$("#mFile")[0].files[0].name;
-			formData.append("file",$("#mFile")[0].files[0]);
-			formData.append("fileName",fileName);
+			var fileName = $("#mFile")[0].files[0].name;
+			formData.append("file", $("#mFile")[0].files[0]);
+			formData.append("fileName", fileName);
 			$.ajax({
 				url : "upload",
-				
 				type : "POST",
 				data : formData,
 				async : true,
 				cache : false,
+				dataType : 'json',
 				contentType : false,
 				processData : false,
 				success : function(returndata) {
-					alert(returndata.result);
+					filepath = returndata;
+					$("#tag").html("上传成功");
+					$("#tag").css({
+						color : "red"
+					});
 				},
 				error : function(returndata) {
-					alert(returndata);
+					$("#tag").html("上传失败");
+					$("#tag").css({
+						color : "black"
+					});
 				}
 			});
 
 		}
 
-		var time = "";
 		function d533_focus(element) {
-
 			var onpickedFunc = function() {
-				time = $dp.cal.getDateStr();
+				puhdate = $dp.cal.getDateStr();
 			};
-
 			WdatePicker({
 				position : {
 					top : 'above'
@@ -117,65 +124,37 @@
 				el : element,
 				onpicked : onpickedFunc
 			});
-
 		}
-		$(document)
-				.ready(
-						function() {
+		$(document).ready(function() {
+			var promaname = sessionStorage.getItem("promaname");
+			var packageid = sessionStorage.getItem("promaid");
+			$("#packageName").html(promaname);
+			$("#submit").click(function() {
+				if ($("#ver").val() == "") {
+					alert("程序版本编号不能为空");
+					return;
+				} else if ($("#modifyDetail").val() == "") {
+					alert("更新修改功能不能为空");
+					return;
+				} else if ($("#packageDate").val() == "") {
+					alert("预备发布日期不能为空");
+					return;
+				} else {
+					$.post("addPackageVersion", {
+						"packageName" : promaname,
+						"ver" : $("#ver").val(),
+						"packageid" : packageid,
+						"modifyDetail" : $("#modifyDetail").val(),
+						"puhdate" : puhdate,
+						"filepath" : filepath,
+						"ismust" : $("input#ismust:checkbox").is(":checked")
+					}, function(data) {
+						alert("1");
+					});
 
-							var promaname = sessionStorage.getItem("promaname");
-							var promaid = sessionStorage.getItem("promaid");
-
-							$("#packageName").html(promaname);
-
-							$("#button").click(function() {
-								alert(time);
-
-							});
-
-							$("#submit")
-									.click(
-											function() {
-												if ($("#packageId").val() == "") {
-													alert("程序版本编号不能为空");
-													return;
-												} else if ($(
-														"#packageUpdateDetails")
-														.val() == "") {
-													alert("更新修改功能不能为空");
-													return;
-												} else if ($("#packageDate")
-														.val() == "") {
-													alert("预备发布日期不能为空");
-													return;
-												} else {
-													$
-															.post(
-																	"addPackageVersion",
-																	{
-																		"packageName" : $(
-																				"packageName")
-																				.val(),
-																		"packageId" : $(
-																				"packageId")
-																				.val(),
-																		"packageUpdateDetails" : $(
-																				"packageUpdateDetails")
-																				.val(),
-																		"packageDate" : time,
-																		"packageForceUpdate" : $(
-																				"input#packageForceUpdate:checkbox")
-																				.is(
-																						":checked")
-																	},
-																	function(
-																			data) {
-																		alert("1");
-																	});
-
-												}
-											});
-						});
+				}
+			});
+		});
 	</script>
 
 

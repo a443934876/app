@@ -17,11 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.kobjects.base64.Base64;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,20 +33,20 @@ import com.great.util.AuthCode;
 import com.great.util.WebServiceUtil;
 
 /**
- * ç”¨æˆ·çš„æ“ä½œç®¡ç†
+ * ÓÃ»§µÄ²Ù×÷¹ÜÀí
  * 
  */
 @Controller
 public class UserController {
 
-	private String imgCode = "";// å­˜éªŒè¯ç å†…å®¹
+	private String imgCode = "";// ´æÑéÖ¤ÂëÄÚÈİ
 
 	@RequestMapping("login")
 	@ResponseBody
 	public Map<String, Object> login(@RequestParam Map<String, String> map,
 			HttpSession session) throws Exception {
 		/**
-		 * ç”¨æˆ·ç™»é™†éªŒè¯
+		 * ÓÃ»§µÇÂ½ÑéÖ¤
 		 */
 		Map<String, Object> backMap = new HashMap<>();
 		String nike = map.get("nike");
@@ -65,11 +65,11 @@ public class UserController {
 			}
 			if (ret.equals("0")) {
 				backMap.put("result", "success");
-				// è¿”å›0è¡¨ç¤ºç™»é™†æˆåŠŸï¼Œå°†ç”¨æˆ·çš„idå­˜èµ·æ¥
+				// ·µ»Ø0±íÊ¾µÇÂ½³É¹¦£¬½«ÓÃ»§µÄid´æÆğÀ´
 				if (((String) resultArrayList.get(0).get("ret")).equals("0")) {
 					String Uid = (String) resultArrayList.get(0).get("Uid");
 					String peoid = (String) resultArrayList.get(0).get("peoid");
-					String name = (String) resultArrayList.get(0).get("å§“å");
+					String name = (String) resultArrayList.get(0).get("ĞÕÃû");
 					session.setAttribute("Uid", Uid);
 					session.setAttribute("PUserID", peoid);
 					session.setAttribute("nike", nike);
@@ -88,7 +88,7 @@ public class UserController {
 		return backMap;
 	}
 
-	// ç™»é™†æ—¶è·å–éªŒè¯ç ä½¿ç”¨
+	// µÇÂ½Ê±»ñÈ¡ÑéÖ¤ÂëÊ¹ÓÃ
 	@RequestMapping("imgCode")
 	@ResponseBody
 	@Transactional(rollbackFor = Exception.class)
@@ -99,7 +99,7 @@ public class UserController {
 		BufferedImage image = AuthCode.getAuthImg(imgCode);
 
 		try {
-			// å†™å…¥å¯¹åº”imgæ ‡ç­¾ä¸Šï¼Œæ˜¾ç¤ºå‡ºæ¥
+			// Ğ´Èë¶ÔÓ¦img±êÇ©ÉÏ£¬ÏÔÊ¾³öÀ´
 			ImageIO.write(image, "JPEG", response.getOutputStream());
 		} catch (IOException e) {
 
@@ -107,20 +107,20 @@ public class UserController {
 		}
 	}
 
-	// è·å–ç”¨æˆ·ç™»å½•åå…¬å¸ä¿¡æ¯çš„é€‰æ‹©
+	// »ñÈ¡ÓÃ»§µÇÂ¼ºó¹«Ë¾ĞÅÏ¢µÄÑ¡Ôñ
 	@RequestMapping("getCompany")
 	@ResponseBody
 	public Map<String, Object> getCompany(String personId, HttpSession session)
 			throws Exception {
 
 		String[] key = { "uPersonalID", "sState" };
-		Object[] value = { personId, "åœ¨èŒ" };
+		Object[] value = { personId, "ÔÚÖ°" };
 		ArrayList<HashMap<String, Object>> resultArrayList;
 
 		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value,
 				"getMoreComs", WebServiceUtil.HUIWEI_URL,
 				WebServiceUtil.HUIWEI_NAMESPACE);
-		// è¿”å›åˆ°å‰ç«¯çš„é›†åˆ
+		// ·µ»Øµ½Ç°¶ËµÄ¼¯ºÏ
 		ArrayList<Object> backList = new ArrayList<Object>();
 		for (int i = 0; i < resultArrayList.size(); i++) {
 
@@ -147,7 +147,7 @@ public class UserController {
 
 	}
 
-	// æŸ¥è¯¢ç‰ˆæœ¬
+	// ²éÑ¯°æ±¾
 	@RequestMapping("getNewPackageVersion")
 	@ResponseBody
 	public Map<String, Object> getNewPackageVersion(String comid)
@@ -160,7 +160,7 @@ public class UserController {
 		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value,
 				"getNewPackageVersion", WebServiceUtil.HUIWEI_PM_URL,
 				WebServiceUtil.HUIWEI_PM_NAMESPACE);
-		// è¿”å›åˆ°å‰ç«¯çš„é›†åˆ
+		// ·µ»Øµ½Ç°¶ËµÄ¼¯ºÏ
 		ArrayList<Object> backList = new ArrayList<Object>();
 		for (int i = 0; i < resultArrayList.size(); i++) {
 			Map<String, String> map = new HashMap<String, String>();
@@ -187,9 +187,10 @@ public class UserController {
 	// getPackage
 	@RequestMapping("getPackage")
 	@ResponseBody
-	public Map<String, Object> getPackage(String packageid, String comid)
+	public Map<String, Object> getPackage(@RequestParam Map<String, String> map1)
 			throws Exception {
-
+		String packageid = map1.get("packageid");
+		String comid = map1.get("comid");
 		String[] key = { "packageid", "packagename", "comid" };
 		Object[] value = { packageid, "", comid };
 		ArrayList<HashMap<String, Object>> resultArrayList;
@@ -197,7 +198,7 @@ public class UserController {
 		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value,
 				"getPackage", WebServiceUtil.HUIWEI_PM_URL,
 				WebServiceUtil.HUIWEI_PM_NAMESPACE);
-		// è¿”å›åˆ°å‰ç«¯çš„é›†åˆ
+		// ·µ»Øµ½Ç°¶ËµÄ¼¯ºÏ
 		ArrayList<Object> backList = new ArrayList<Object>();
 		for (int i = 0; i < resultArrayList.size(); i++) {
 			Map<String, String> map = new HashMap<String, String>();
@@ -206,6 +207,41 @@ public class UserController {
 					(String) resultArrayList.get(i).get("promaname"));
 			map.put("profun", (String) resultArrayList.get(i).get("profun"));
 			map.put("plat", (String) resultArrayList.get(i).get("plat"));
+			backList.add(map);
+		}
+
+		Map<String, Object> backMap = new HashMap<String, Object>();
+		backMap.put("result", backList);
+		return backMap;
+
+	}
+
+	// getPackageVersion
+	@RequestMapping("getPackageVersion")
+	@ResponseBody
+	public Map<String, Object> getPackageVersion(
+			@RequestParam Map<String, String> map1) throws Exception {
+		String packageid = map1.get("packageid");
+		String comid = map1.get("comid");
+		String ver = map1.get("ver");
+		if (ver == null) {
+			ver = "";
+		}
+		String[] key = { "packageid", "ver", "comid" };
+		Object[] value = { packageid, ver, comid };
+		ArrayList<HashMap<String, Object>> resultArrayList = WebServiceUtil
+				.getWebServiceMsg(key, value, "getPackageVersion",
+						WebServiceUtil.HUIWEI_PM_URL,
+						WebServiceUtil.HUIWEI_PM_NAMESPACE);
+		// ·µ»Øµ½Ç°¶ËµÄ¼¯ºÏ
+		ArrayList<Object> backList = new ArrayList<Object>();
+		for (int i = 0; i < resultArrayList.size(); i++) {
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("proverid", (String) resultArrayList.get(i).get("proverid"));
+			map.put("proname",(String) resultArrayList.get(i).get("proname"));
+			map.put("plat", (String) resultArrayList.get(i).get("plat"));
+			map.put("mainfun", (String) resultArrayList.get(i).get("mainfun"));
+			map.put("ver", (String) resultArrayList.get(i).get("ver"));
 			backList.add(map);
 		}
 
@@ -237,62 +273,38 @@ public class UserController {
 
 	}
 
-	// å¢åŠ app
+	// Ôö¼Óapp
 	@RequestMapping("addPackageVersion")
 	@ResponseBody
-	public Map<String, Object> addPackageVersion(String promaid,
-			HttpSession session) throws Exception {
-
+	public Map<String, Object> addPackageVersion(
+			@RequestParam Map<String, String> map) throws Exception {
+		String puhdate = map.get("puhdate");
+		String ver = map.get("ver");
+		String packageid = map.get("packageid");
+		String modifyDetail = map.get("modifyDetail");
+		String filepath = map.get("filepath");
+		String ismust = map.get("ismust");
 		String[] key = { "puhdate", "ver", "packageid", "modifyDetail",
 				"filepath", "ismust" };
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		System.out.println(formatter.format(new Date()));
-		String SendTime = formatter.format(new Date());
-		// é€‰æ‹©æ—¥æœŸ
-		Object[] value = { SendTime, "20170115.1.1", promaid, "æ–°å¢ç¨‹åºåŒ…", "", true };
-		ArrayList<HashMap<String, Object>> resultArrayList;
-
-		resultArrayList = WebServiceUtil.getWebServiceMsg(key, value,
-				"addPackageVersion", WebServiceUtil.HUIWEI_PM_URL,
-				WebServiceUtil.HUIWEI_PM_NAMESPACE);
+		Object[] value = { puhdate, ver, packageid, modifyDetail, filepath,
+				ismust };
+		ArrayList<HashMap<String, Object>> resultArrayList = WebServiceUtil
+				.getWebServiceMsg(key, value, "addPackageVersion",
+						WebServiceUtil.HUIWEI_PM_URL,
+						WebServiceUtil.HUIWEI_PM_NAMESPACE);
 		System.out.println(resultArrayList);
-		// è¿”å›åˆ°å‰ç«¯çš„é›†åˆ
-		ArrayList<Object> backList = new ArrayList<Object>();
-		for (int i = 0; i < resultArrayList.size(); i++) {
 
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("Emids", (String) resultArrayList.get(i).get("Emid"));
-			map.put("comname", (String) resultArrayList.get(i).get("comname"));
-
-			backList.add(map);
-		}
-		if (resultArrayList.size() == 1) {
-			session.setAttribute("Emid",
-					(String) resultArrayList.get(0).get("Emid"));
-			session.setAttribute("orgidstr", (String) resultArrayList.get(0)
-					.get("orgidstr"));
-			session.setAttribute("orgname", (String) resultArrayList.get(0)
-					.get("orgname"));
-		}
-		Map<String, Object> backMap = new HashMap<String, Object>();
-		backMap.put("result", backList);
-		return backMap;
+		return (Map<String, Object>) resultArrayList;
 
 	}
 
-	// ä¸Šä¼ æ–‡ä»¶
-	@RequestMapping(value="upload")
+	// ÉÏ´«ÎÄ¼ş
+	@RequestMapping(value = "upload", produces = "application/json; charset=utf-8")
 	@ResponseBody
 	@Transactional(rollbackFor = Exception.class)
-	public String upload(HttpServletRequest request)
-			throws Exception {
-
-		
-
+	public String upload(HttpServletRequest request) throws Exception {
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-
 		String saveFilePath = "";
-
 		MultipartFile file = multipartRequest.getFile("file");
 		String backStr = "";
 		if (file != null) {
@@ -312,10 +324,11 @@ public class UserController {
 			saveFilePath = saveFilePath + filePath;
 			System.out.println(saveFilePath);
 		}
-		return saveFilePath;
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(saveFilePath);
 	}
 
-	// è·å–ç”¨æˆ·ç™»å½•åå…¬å¸ä¿¡æ¯çš„é€‰æ‹©
+	// »ñÈ¡ÓÃ»§µÇÂ¼ºó¹«Ë¾ĞÅÏ¢µÄÑ¡Ôñ
 	@RequestMapping("GoIndexPage")
 	@Transactional(rollbackFor = Exception.class)
 	public ModelAndView GoIndexPage(String Emid, HttpSession session)
@@ -333,33 +346,33 @@ public class UserController {
 	@RequestMapping("fileupload")
 	public void fileupload(HttpServletRequest request,
 			HttpServletResponse response, String loginName) throws Exception {
-		// è·å–æœåŠ¡å™¨ä¸­ä¿å­˜æ–‡ä»¶çš„è·¯å¾„
+		// »ñÈ¡·şÎñÆ÷ÖĞ±£´æÎÄ¼şµÄÂ·¾¶
 		String path = request.getSession().getServletContext().getRealPath("")
 				+ "\\upload\\record\\";
 		System.out.println(path);
-		// è·å–è§£æå™¨
+		// »ñÈ¡½âÎöÆ÷
 		CommonsMultipartResolver resolver = new CommonsMultipartResolver(
 				request.getSession().getServletContext());
-		// åˆ¤æ–­æ˜¯å¦æ˜¯æ–‡ä»¶
+		// ÅĞ¶ÏÊÇ·ñÊÇÎÄ¼ş
 		if (resolver.isMultipart(request)) {
-			// è¿›è¡Œè½¬æ¢
+			// ½øĞĞ×ª»»
 			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) (request);
-			// è·å–æ‰€æœ‰æ–‡ä»¶åç§°
+			// »ñÈ¡ËùÓĞÎÄ¼şÃû³Æ
 			Iterator<String> it = multiRequest.getFileNames();
 			while (it.hasNext()) {
-				// æ ¹æ®æ–‡ä»¶åç§°å–æ–‡ä»¶
+				// ¸ù¾İÎÄ¼şÃû³ÆÈ¡ÎÄ¼ş
 				MultipartFile file = multiRequest.getFile(it.next());
 				String fileName = file.getOriginalFilename();
 				String localPath = path + fileName;
-				// åˆ›å»ºä¸€ä¸ªæ–°çš„æ–‡ä»¶å¯¹è±¡ï¼Œåˆ›å»ºæ—¶éœ€è¦ä¸€ä¸ªå‚æ•°ï¼Œå‚æ•°æ˜¯æ–‡ä»¶æ‰€éœ€è¦ä¿å­˜çš„ä½ç½®
+				// ´´½¨Ò»¸öĞÂµÄÎÄ¼ş¶ÔÏó£¬´´½¨Ê±ĞèÒªÒ»¸ö²ÎÊı£¬²ÎÊıÊÇÎÄ¼şËùĞèÒª±£´æµÄÎ»ÖÃ
 				File newFile = new File(localPath);
-				// ä¸Šä¼ çš„æ–‡ä»¶å†™å…¥åˆ°æŒ‡å®šçš„æ–‡ä»¶ä¸­
+				// ÉÏ´«µÄÎÄ¼şĞ´Èëµ½Ö¸¶¨µÄÎÄ¼şÖĞ
 				file.transferTo(newFile);
 			}
 		}
 	}
 
-	// è·å–ç”¨æˆ·ç™»å½•åå…¬å¸ä¿¡æ¯çš„é€‰æ‹©(å…¬æ–‡æ ‡é¢˜ï¼Œæ•´æ”¹å†…å®¹ç­‰)
+	// »ñÈ¡ÓÃ»§µÇÂ¼ºó¹«Ë¾ĞÅÏ¢µÄÑ¡Ôñ(¹«ÎÄ±êÌâ£¬Õû¸ÄÄÚÈİµÈ)
 	@RequestMapping("getGovern")
 	@Transactional(rollbackFor = Exception.class)
 	public ModelAndView getGovern(String Emid, HttpSession session)
@@ -368,18 +381,18 @@ public class UserController {
 
 		ModelAndView modelAndView = new ModelAndView("Govern");
 
-		String[] key1 = { "Emid", "DayCount", "TopCount", "InfoID", "viewed" };// è·å–å…¬æ–‡key
+		String[] key1 = { "Emid", "DayCount", "TopCount", "InfoID", "viewed" };// »ñÈ¡¹«ÎÄkey
 		Object[] value1 = { emid, 365, 20, 0, false };
 		String[] key2 = { "uEmid", "isFinished", "isReviewed", "cStart",
-				"cEnd", "hgrade", "areaRangeID", "industryStr", "objOrgName" };// è·å–æ•´æ”¹ä¿¡æ¯key
-		// è·å–ä»¥å‰çš„æ—¶é—´
+				"cEnd", "hgrade", "areaRangeID", "industryStr", "objOrgName" };// »ñÈ¡Õû¸ÄĞÅÏ¢key
+		// »ñÈ¡ÒÔÇ°µÄÊ±¼ä
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		c.setTime(new Date());
 		c.add(Calendar.YEAR, -1);
 		Date y = c.getTime();
 		String year = format.format(y);
-		// è·å–ç°åœ¨çš„æ—¶é—´
+		// »ñÈ¡ÏÖÔÚµÄÊ±¼ä
 		String now = format.format(new Date());
 
 		Object[] value2 = { emid, 2, 0, year, now, "", 0, "",
@@ -388,38 +401,38 @@ public class UserController {
 		ArrayList<HashMap<String, Object>> resultArrayList2;
 		ArrayList<Map<String, String>> TitleList = new ArrayList<Map<String, String>>();
 		ArrayList<Map<String, String>> GovernList = new ArrayList<Map<String, String>>();
-		// è·å–å…¬æ–‡ä¿¡æ¯æ ‡é¢˜
+		// »ñÈ¡¹«ÎÄĞÅÏ¢±êÌâ
 		resultArrayList1 = WebServiceUtil.getWebServiceMsg(key1, value1,
 				"getWebInformFroEmID", WebServiceUtil.HUIWEI_INFO,
 				WebServiceUtil.HUIWEI_NAMESPACE);
 
 		for (int i = 0; i < resultArrayList1.size(); i++) {
 			Map<String, String> map = new HashMap<String, String>();
-			map.put("InfoID", (String) resultArrayList1.get(i).get("InfoID"));// å…¬æ–‡id
+			map.put("InfoID", (String) resultArrayList1.get(i).get("InfoID"));// ¹«ÎÄid
 			map.put("InfoTitle",
-					(String) resultArrayList1.get(i).get("InfoTitle"));// å…¬æ–‡æ ‡é¢˜
-			map.put("CDocID", (String) resultArrayList1.get(i).get("CDocID"));// å…³è”çš„æ™ºèƒ½æ–‡æ¡£
+					(String) resultArrayList1.get(i).get("InfoTitle"));// ¹«ÎÄ±êÌâ
+			map.put("CDocID", (String) resultArrayList1.get(i).get("CDocID"));// ¹ØÁªµÄÖÇÄÜÎÄµµ
 			map.put("InfoWriter",
-					(String) resultArrayList1.get(i).get("InfoWriter"));// æ’°å†™äººå‘˜å§“å
+					(String) resultArrayList1.get(i).get("InfoWriter"));// ×«Ğ´ÈËÔ±ĞÕÃû
 			map.put("InfoNumber",
-					(String) resultArrayList1.get(i).get("InfoNumber"));// å…¬æ–‡æ ‡å·
-			map.put("PubDate", (String) resultArrayList1.get(i).get("PubDate"));// å…¬æ–‡å‘å¸ƒæ—¥æœŸ
+					(String) resultArrayList1.get(i).get("InfoNumber"));// ¹«ÎÄ±êºÅ
+			map.put("PubDate", (String) resultArrayList1.get(i).get("PubDate"));// ¹«ÎÄ·¢²¼ÈÕÆÚ
 			map.put("PubComname",
-					(String) resultArrayList1.get(i).get("PubComname"));// å‘å¸ƒå•ä½ç®€ç§°
+					(String) resultArrayList1.get(i).get("PubComname"));// ·¢²¼µ¥Î»¼ò³Æ
 			map.put("puborgname",
-					(String) resultArrayList1.get(i).get("puborgname"));// å‘å¸ƒå•ä½å…¨ç§°
-			map.put("pubobj", (String) resultArrayList1.get(i).get("pubobj"));// å‘å¸ƒå¯¹è±¡
-			map.put("Emid", Emid);// å‘å¸ƒå¯¹è±¡
+					(String) resultArrayList1.get(i).get("puborgname"));// ·¢²¼µ¥Î»È«³Æ
+			map.put("pubobj", (String) resultArrayList1.get(i).get("pubobj"));// ·¢²¼¶ÔÏó
+			map.put("Emid", Emid);// ·¢²¼¶ÔÏó
 			String state = (String) resultArrayList1.get(i).get("viewed");
-			if (state.equals("0")) {// æœªé˜…
-				map.put("state", "æœªé˜…");
+			if (state.equals("0")) {// Î´ÔÄ
+				map.put("state", "Î´ÔÄ");
 			} else {
-				map.put("state", "å·²é˜…");
+				map.put("state", "ÒÑÔÄ");
 			}
 			TitleList.add(map);
 		}
 
-		// è·å–æ•´æ”¹ä¿¡æ¯
+		// »ñÈ¡Õû¸ÄĞÅÏ¢
 		resultArrayList2 = WebServiceUtil.getWebServiceMsg(key2, value2,
 				"getAllHiddenIllness", WebServiceUtil.HUIWEI_SAFE_URL,
 				WebServiceUtil.HUIWEI_NAMESPACE);
@@ -427,17 +440,17 @@ public class UserController {
 			Map<String, String> map2 = new HashMap<String, String>();
 
 			map2.put("hTroubleID",
-					(String) resultArrayList2.get(i).get("hTroubleID"));// éšæ‚£id
+					(String) resultArrayList2.get(i).get("hTroubleID"));// Òş»¼id
 			map2.put("safetyTrouble",
-					(String) resultArrayList2.get(i).get("safetyTrouble"));// éšæ‚£æè¿°
+					(String) resultArrayList2.get(i).get("safetyTrouble"));// Òş»¼ÃèÊö
 			map2.put("actionOrgName",
-					(String) resultArrayList2.get(i).get("actionOrgName"));// ä¸´æ£€å•ä½åç§°
+					(String) resultArrayList2.get(i).get("actionOrgName"));// ÁÙ¼ìµ¥Î»Ãû³Æ
 			String checkDate = (String) resultArrayList2.get(i)
 					.get("checkDate");
 			if (checkDate != null && !checkDate.equals("")) {
 				int cutNum = checkDate.lastIndexOf("T");
 				checkDate = checkDate.substring(0, cutNum);
-				map2.put("checkDate", checkDate);// æ—¥æœŸ
+				map2.put("checkDate", checkDate);// ÈÕÆÚ
 			}
 			GovernList.add(map2);
 		}
@@ -449,7 +462,7 @@ public class UserController {
 
 	}
 
-	// éªŒè¯æ–°ç”¨æˆ·åæ˜¯å¦å¯ä»¥ç”¨
+	// ÑéÖ¤ĞÂÓÃ»§ÃûÊÇ·ñ¿ÉÒÔÓÃ
 	@RequestMapping("verifyName")
 	@ResponseBody
 	@Transactional(rollbackFor = Exception.class)
@@ -467,15 +480,15 @@ public class UserController {
 						WebServiceUtil.HUIWEI_NAMESPACE);
 		String ret = ((String) resultList.get(0).get("ret"));
 		if (ret.equals("0")) {
-			backMap.put("result", "lose");// å·²å­˜åœ¨
+			backMap.put("result", "lose");// ÒÑ´æÔÚ
 		} else {
-			backMap.put("result", "suc");// å¯ä»¥ä½¿ç”¨
+			backMap.put("result", "suc");// ¿ÉÒÔÊ¹ÓÃ
 		}
 		return backMap;
 
 	}
 
-	// ä¿®æ”¹ç”¨æˆ·å
+	// ĞŞ¸ÄÓÃ»§Ãû
 	@RequestMapping("userSetMessage")
 	@ResponseBody
 	@Transactional(rollbackFor = Exception.class)
@@ -503,9 +516,9 @@ public class UserController {
 				.getWebServiceMsg(key, value, "getSinglePersonalUserFromLogin",
 						WebServiceUtil.HUIWEI_URL,
 						WebServiceUtil.HUIWEI_NAMESPACE);
-		// System.out.println("ç»“æœé›†"+resultList.size());
+		// System.out.println("½á¹û¼¯"+resultList.size());
 		String ret = ((String) resultList.get(0).get("ret"));
-		if (ret.equals("0")) {// é”™è¯¯
+		if (ret.equals("0")) {// ´íÎó
 			backMap.put("result", "lose");
 			return backMap;
 		} else {
@@ -517,7 +530,7 @@ public class UserController {
 			resultArrayList2 = WebServiceUtil.getWebServiceMsg(key2, value2,
 					"getSinglePersonalUserFromLogin",
 					WebServiceUtil.HUIWEI_URL, WebServiceUtil.HUIWEI_NAMESPACE);
-			if (resultArrayList2.size() == 0) {// å¯†ç é”™è¯¯
+			if (resultArrayList2.size() == 0) {// ÃÜÂë´íÎó
 				backMap.put("result", "misspwd");
 				return backMap;
 			}
@@ -538,7 +551,7 @@ public class UserController {
 
 				System.err.println(resultList5.get(0).toString());
 			} else {
-				System.err.println("æ²¡æœ‰ç»“æœé›†");
+				System.err.println("Ã»ÓĞ½á¹û¼¯");
 			}
 		}
 

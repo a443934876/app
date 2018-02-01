@@ -24,6 +24,8 @@
 <link rel="stylesheet" href="css/common/index_inner.css" />
 <link rel="stylesheet" href="css/h-ui/H-ui.login.css" />
 <script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-table.js"></script>
+<script type="text/javascript" src="js/bootstrap-table-export.js"></script>
 <title>版本查询</title>
 <style type="text/css">
 .heart {
@@ -41,15 +43,111 @@
 
 thead {
 	background-color: #CCCCCC;
-	
 }
-.table th, .table td {  
-text-align: center;  
- 
-} 
 
+.table th,.table td {
+	text-align: center;
+}
 </style>
+<script type="text/javascript">
+	var packageid = "";
+	$(document).ready(function() {
 
+		var comid = 6;
+		getPackage(comid);
+	});
+	function getPackage(comid) {
+		$.post("getPackage", {
+			"packageid" : 0,
+			"comid" : comid,
+		}, function(date) {
+			var result = date.result;
+			$.each(result, function(i, item) {
+				$("#select").append(
+						"<option value="+result[i].promaid+">"
+								+ result[i].promaname + "</option>");
+			});
+		});
+	}
+	function onChangeSelect() {
+		packageid = $("#select option:selected").val();
+
+	}
+
+	function clicks() {
+		
+		var comid = 6;
+		$.post("getPackageVersion", {
+			"packageid" : packageid,
+
+			"ver " : $("#ver").val(),
+			"comid" : comid,
+		}, function(date) {
+			
+			var result = date.result;
+			alert(result);
+			var datas = [];
+			$.each(result, function(i, item) {
+				datas[i] = {
+					"proname" : result[i].proname,
+					"plat" : result[i].plat,
+					"mainfun" : result[i].mainfun,
+					"ver" : result[i].ver
+
+				};
+
+			});
+			$("#reportTable").bootstrapTable({
+				method : "post",
+				cache : false,
+				height : 250,
+				striped : true,
+				pagination : true,
+				pageSize : 5,
+				pageNumber : 1,
+				pageList : [ 10, 20, 50, 100, 200, 500 ],
+				sidePagination : 'client',
+				exportTypes : [ 'csv', 'txt', 'xml' ],
+				clickToSelect : true,
+				columns : [ {
+
+					field : "proname",
+					title : "程序包名称",
+					align : "center",
+					valign : "middle",
+					sortable : "true"
+				}, {
+					field : "plat",
+					title : "兼容平台",
+					align : "center",
+					valign : "middle",
+					sortable : "true"
+				}, {
+					field : "mainfun",
+					title : "功能简述",
+					align : "center",
+					valign : "middle",
+					sortable : "true"
+				}, {
+					field : "ver",
+					title : "最新版本",
+					align : "center",
+					valign : "middle",
+					sortable : "true"
+				}, {
+					title : "删除",
+					field : "promaid",
+					align : "center",
+					formatter : function(value, row, index) {
+
+						return '<a href="jsp/chengxunbangbenfabu.jsp">进入</a> ';
+					}
+				} ],
+				data : datas,
+			});
+		});
+	}
+</script>
 
 </head>
 
@@ -58,15 +156,15 @@ text-align: center;
 	<div class="heart">
 		<div style="margin-left: 10px;padding-top: 10px;">
 			<div>
-				<span>程序包名称：&nbsp;&nbsp;</span><select class="select"
-					style="width: 400px;">
-					<option selected="selected">所有</option>
+				<span>程序包名称：&nbsp;&nbsp;</span><select id="select"
+					onchange="onChangeSelect();" style="width: 400px;">
+					<option selected="selected" value="-1">所有</option>
 				</select>
 			</div>
 			<br>
 
 			<div>
-				<span>程序包名称：&nbsp;&nbsp;</span><input type="text"
+				<span>版本关键词：&nbsp;&nbsp;</span><input type="text" id="ver"
 					style="width: 400px;">
 
 			</div>
@@ -74,7 +172,7 @@ text-align: center;
 
 			<div>
 				<input type="button" value="查&nbsp;&nbsp;&nbsp;&nbsp;询"
-					style="width: 100px">
+					style="width: 100px" onclick="clicks()">
 
 			</div>
 
@@ -82,7 +180,8 @@ text-align: center;
 		</div>
 	</div>
 	<div class="heart1">
-		<table class="table table-bordered table-hover table-responsive">
+		<table id="reportTable"
+			class="table table-bordered table-hover table-responsive">
 			<thead>
 				<tr>
 					<th>程序包名称</th>
@@ -92,70 +191,15 @@ text-align: center;
 					<th>删除</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr>
-					<td>慧为安监通_android</td>
-					<td>android</td>
-					<td>安全检查、设施设备</td>
-					<td>ver201212.2.1</td>
-					<td><input type="checkbox"></td>
-				</tr>
-				<tr>
-				<td>慧为安监通_android</td>
-					<td>android</td>
-					<td>安全检查、设施设备</td>
-					<td>ver201212.2.1</td>
-					<td><input type="checkbox"></td>
-				</tr>
-				<tr>
-					<td>慧为安监通_android</td>
-					<td>android</td>
-					<td>安全检查、设施设备</td>
-					<td>ver201212.2.1</td>
-					<td><input type="checkbox"></td>
-				</tr>
-				<tr>
-					<td>慧为安监通_android</td>
-					<td>android</td>
-					<td>安全检查、设施设备</td>
-					<td>ver201212.2.1</td>
-					<td><input type="checkbox"></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-			</tbody>
 		</table>
 	</div>
 	<div style="margin:auto;width: 550px;">
-		<input type="button" value="提交删除" style="width: 100px ; float:left;" /><span
-			style="float:right; ">第1页/共3页&nbsp;&nbsp;第1页|下一页|上一页|最末页</span>
+		<input type="button" value="提交删除" style="width: 100px ;" />
 	</div>
+
+
+
+
 
 
 </body>

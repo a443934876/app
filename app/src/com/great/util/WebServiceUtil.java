@@ -202,6 +202,7 @@ public class WebServiceUtil {
 		ht.call(actionUrl, envelope);
 		SoapObject result = null;
 		try {
+			
 			result = (SoapObject) envelope.bodyIn;
 		} catch (Exception e) {
 			SoapFault soaF = (SoapFault) envelope.bodyIn;
