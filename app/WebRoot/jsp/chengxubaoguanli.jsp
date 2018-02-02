@@ -69,6 +69,14 @@ thead {
 		});
 
 	});
+	window.operateEvents = {
+			'click .mod':function(value, row, index) {
+				sessionStorage.setItem("promaname", row.promaname);
+				sessionStorage.setItem("promaid", value);
+				alert(row.promaname);
+				
+			}
+		};
 
 	function getPackage(comid) {
 		$.post("getPackage", {
@@ -123,18 +131,22 @@ thead {
 					title : "发布新版",
 					field : "promaid",
 					align : "center",
+					
 					formatter : function(value, row, index) {
-						sessionStorage.setItem("promaname", row.promaname);
-						sessionStorage.setItem("promaid", row.promaid);
-						return '<a href="jsp/chengxunbangbenfabu.jsp">进入</a> ';
-					}
+						return '<a class="mod" href="jsp/chengxunbangbenfabu.jsp">进入</a> ';
+					},
+					events: operateEvents,
+					
 				} ],
 				data : datas,
 			});
-
+			
+			
 		});
 
 	}
+	
+	
 </script>
 </head>
 

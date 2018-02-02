@@ -100,7 +100,7 @@
 					filepath = returndata;
 					$("#tag").html("上传成功");
 					$("#tag").css({
-						color : "red"
+						color : "green"
 					});
 				},
 				error : function(returndata) {
@@ -128,8 +128,11 @@
 		$(document).ready(function() {
 			var promaname = sessionStorage.getItem("promaname");
 			var packageid = sessionStorage.getItem("promaid");
+			sessionStorage.removeItem("promaid");
+			alert(packageid);
 			$("#packageName").html(promaname);
 			$("#submit").click(function() {
+				
 				if ($("#ver").val() == "") {
 					alert("程序版本编号不能为空");
 					return;
@@ -149,7 +152,8 @@
 						"filepath" : filepath,
 						"ismust" : $("input#ismust:checkbox").is(":checked")
 					}, function(data) {
-						alert("1");
+						
+						window.location.reload();
 					});
 
 				}

@@ -50,12 +50,12 @@ thead {
 }
 </style>
 <script type="text/javascript">
-	var packageid = "";
 	$(document).ready(function() {
 
 		var comid = 6;
 		getPackage(comid);
 	});
+
 	function getPackage(comid) {
 		$.post("getPackage", {
 			"packageid" : 0,
@@ -69,83 +69,107 @@ thead {
 			});
 		});
 	}
-	function onChangeSelect() {
-		packageid = $("#select option:selected").val();
 
-	}
-
-	function clicks() {
+	function onDelete() {
 		
-		var comid = 6;
-		$.post("getPackageVersion", {
-			"packageid" : packageid,
 
-			"ver " : $("#ver").val(),
-			"comid" : comid,
+		var pverid = JSON.stringify($("#reportTable").bootstrapTable(
+				'getSelections'));
+		$.post("dropPackageVersion", {
+			"pveridlist" : pverid,
 		}, function(date) {
 			
-			var result = date.result;
-			alert(result);
-			var datas = [];
-			$.each(result, function(i, item) {
-				datas[i] = {
-					"proname" : result[i].proname,
-					"plat" : result[i].plat,
-					"mainfun" : result[i].mainfun,
-					"ver" : result[i].ver
-
-				};
-
-			});
-			$("#reportTable").bootstrapTable({
-				method : "post",
-				cache : false,
-				height : 250,
-				striped : true,
-				pagination : true,
-				pageSize : 5,
-				pageNumber : 1,
-				pageList : [ 10, 20, 50, 100, 200, 500 ],
-				sidePagination : 'client',
-				exportTypes : [ 'csv', 'txt', 'xml' ],
-				clickToSelect : true,
-				columns : [ {
-
-					field : "proname",
-					title : "程序包名称",
-					align : "center",
-					valign : "middle",
-					sortable : "true"
-				}, {
-					field : "plat",
-					title : "兼容平台",
-					align : "center",
-					valign : "middle",
-					sortable : "true"
-				}, {
-					field : "mainfun",
-					title : "功能简述",
-					align : "center",
-					valign : "middle",
-					sortable : "true"
-				}, {
-					field : "ver",
-					title : "最新版本",
-					align : "center",
-					valign : "middle",
-					sortable : "true"
-				}, {
-					title : "删除",
-					field : "promaid",
-					align : "center",
-					formatter : function(value, row, index) {
-
-						return '<a href="jsp/chengxunbangbenfabu.jsp">进入</a> ';
-					}
-				} ],
-				data : datas,
-			});
+			window.location.reload();
 		});
+	}
+
+	function query() {
+
+		var comid = 6;
+
+		$
+				.post(
+						"getPackageVersion",
+						{
+							"packageid" : $("#select option:selected").val(),
+							"ver " : $("#ver").val(),
+							"comid" : comid,
+						},
+						function(date) {
+							var result = date.result;
+							var datas = [];
+							$.each(result, function(i, item) {
+								datas[i] = {
+									"fpath" : result[i].fpath,
+									"proverid" : result[i].proverid,
+									"proname" : result[i].proname,
+									"plat" : result[i].plat,
+									"mainfun" : result[i].mainfun,
+									"ver" : result[i].ver,
+								};
+							});
+							$("#reportTable").bootstrapTable('destroy');
+							$("#reportTable")
+									.bootstrapTable(
+											{
+												method : "post",
+												cache : false,
+												height : 250,
+												striped : true,
+												pagination : true,
+												pageSize : 5,
+												pageNumber : 1,
+												pageList : [ 10, 20, 50, 100,
+														200, 500 ],
+												sidePagination : 'client',
+												exportTypes : [ 'csv', 'txt',
+														'xml' ],
+												clickToSelect : true,
+												columns : [
+														{
+
+															field : "proname",
+															title : "程序包名称",
+															align : "center",
+															valign : "middle",
+															sortable : "true"
+														},
+														{
+															field : "plat",
+															title : "兼容平台",
+															align : "center",
+															valign : "middle",
+															sortable : "true"
+														},
+														{
+															field : "mainfun",
+															title : "功能简述",
+															align : "center",
+															valign : "middle",
+															sortable : "true"
+														},
+														{
+															field : "ver",
+															title : "最新版本",
+															align : "center",
+															formatter : function(
+																	value, row,
+																	index) {
+																return '<a  href='+row.fpath+' download >'
+																		+ value
+																		+ '</a> ';
+															}
+														}, {
+															title : "删除",
+															align : "center",
+															valign : "middle",
+															checkbox : true,
+
+														} ],
+												data : datas,
+											});
+
+						});
 	}
 </script>
 
@@ -157,8 +181,8 @@ thead {
 		<div style="margin-left: 10px;padding-top: 10px;">
 			<div>
 				<span>程序包名称：&nbsp;&nbsp;</span><select id="select"
-					onchange="onChangeSelect();" style="width: 400px;">
-					<option selected="selected" value="-1">所有</option>
+					style="width: 400px">
+					<option selected="selected" value="0">所有</option>
 				</select>
 			</div>
 			<br>
@@ -172,7 +196,7 @@ thead {
 
 			<div>
 				<input type="button" value="查&nbsp;&nbsp;&nbsp;&nbsp;询"
-					style="width: 100px" onclick="clicks()">
+					style="width: 100px" onclick="query()">
 
 			</div>
 
@@ -194,7 +218,8 @@ thead {
 		</table>
 	</div>
 	<div style="margin:auto;width: 550px;">
-		<input type="button" value="提交删除" style="width: 100px ;" />
+		<input onclick="onDelete()" type="button" value="提交删除"
+			style="width: 100px ;" />
 	</div>
 
 
