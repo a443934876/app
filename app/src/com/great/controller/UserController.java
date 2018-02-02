@@ -333,11 +333,14 @@ public class UserController {
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		String saveFilePath = "";
 		MultipartFile file = multipartRequest.getFile("file");
+		System.out.println("file"+file);
 		String backStr = "";
 		if (file != null) {
 			String fileName = request.getParameter("fileName");
+			System.out.println("fileName"+fileName);
 			InputStream input = file.getInputStream();
 			byte[] data = new byte[input.available()];
+			System.out.println("data"+data);
 			input.read(data);
 			input.close();
 			String baseString = Base64.encode(data);

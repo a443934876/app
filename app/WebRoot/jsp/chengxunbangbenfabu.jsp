@@ -83,6 +83,8 @@
 		var puhdate = "";
 		var filepath = "";
 		function Upload() {
+			$("#tag").html("文件上传中。。。");
+			$("#button").attr("disabled", true); 
 			var formData = new FormData();
 			var fileName = $("#mFile")[0].files[0].name;
 			formData.append("file", $("#mFile")[0].files[0]);
@@ -97,6 +99,7 @@
 				contentType : false,
 				processData : false,
 				success : function(returndata) {
+					$("#button").attr("disabled", false); 
 					filepath = returndata;
 					$("#tag").html("上传成功");
 					$("#tag").css({
@@ -104,6 +107,7 @@
 					});
 				},
 				error : function(returndata) {
+					$("#button").attr("disabled", false); 
 					$("#tag").html("上传失败");
 					$("#tag").css({
 						color : "black"
@@ -126,14 +130,20 @@
 			});
 		}
 		$(document).ready(function() {
+			$("#packageName").html("");
 			var promaname = sessionStorage.getItem("promaname");
 			var packageid = sessionStorage.getItem("promaid");
 			sessionStorage.removeItem("promaid");
-			alert(packageid);
-			$("#packageName").html(promaname);
-			$("#submit").click(function() {
+
+			if (packageid != null) {
+				$("#packageName").html(promaname);
 				
-				if ($("#ver").val() == "") {
+			}
+			$("#submit").click(function() {
+				if ($("#packageName").html() == "") {
+					alert("程序包名称不能为空");
+					return;
+				} else if ($("#ver").val() == "") {
 					alert("程序版本编号不能为空");
 					return;
 				} else if ($("#modifyDetail").val() == "") {
@@ -152,7 +162,7 @@
 						"filepath" : filepath,
 						"ismust" : $("input#ismust:checkbox").is(":checked")
 					}, function(data) {
-						
+
 						window.location.reload();
 					});
 

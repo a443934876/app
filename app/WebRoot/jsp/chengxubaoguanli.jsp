@@ -69,14 +69,19 @@ thead {
 		});
 
 	});
-	window.operateEvents = {
-			'click .mod':function(value, row, index) {
-				sessionStorage.setItem("promaname", row.promaname);
-				sessionStorage.setItem("promaid", value);
-				alert(row.promaname);
-				
-			}
-		};
+
+	function actionFormatter(value, row, index) {
+		return '<a class="mod" href="jsp/chengxunbangbenfabu.jsp" >进入</a> ';
+	}
+	//表格  - 操作 - 事件
+	window.actionEvents = {
+		'click .mod' : function(e, value, row, index) {
+			sessionStorage.setItem("promaname", row.promaname);
+			sessionStorage.setItem("promaid", row.promaid);
+
+		},
+
+	};
 
 	function getPackage(comid) {
 		$.post("getPackage", {
@@ -131,22 +136,17 @@ thead {
 					title : "发布新版",
 					field : "promaid",
 					align : "center",
-					
-					formatter : function(value, row, index) {
-						return '<a class="mod" href="jsp/chengxunbangbenfabu.jsp">进入</a> ';
-					},
-					events: operateEvents,
-					
+
+					formatter : actionFormatter,
+					events : actionEvents,
+
 				} ],
 				data : datas,
 			});
-			
-			
+
 		});
 
 	}
-	
-	
 </script>
 </head>
 
