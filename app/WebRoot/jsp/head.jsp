@@ -1,7 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
 
@@ -45,9 +46,10 @@
 	text-align: center;
 	line-height: 50px;
 	color: #C9E1F3;
-	width:100px;
-	height:50px;
+	width: 100px;
+	height: 50px;
 	background-color: #4399D8;
+	height: 50px;
 }
 
 .drop-down-content {
@@ -79,23 +81,30 @@ h3 {
 			<li class="drop-down"><a href="jsp/index.jsp">首页</a>
 				<ul class="drop-down-content">
 					<li><a href="jsp/index.jsp">返回首页</a></li>
-					<li><a href="jsp/index.jsp">退出系统</a></li>
+					<li><a onclick="exit()" href="jsp/Loginpage.jsp">退出系统</a></li>
 				</ul></li>
 			<li class="drop-down"><a href="jsp/chengxubaoguanli.jsp">程序包管理</a>
 				<ul class="drop-down-content">
 					<li><a href="jsp/chengxunbangbenfabu.jsp">增加程序包</a></li>
 				</ul></li>
-			<li class="drop-down"><a href="jsp/index.jsp">版本控制</a>
+			<li class="drop-down"><a>版本控制</a>
 				<ul class="drop-down-content">
 					<li><a href="jsp/banbechaxun.jsp">版本查询</a></li>
 				</ul></li>
-			<li class="drop-down"><a href="jsp/index.jsp">帮助</a>
+			<li class="drop-down"><a>帮助</a>
 				<ul class="drop-down-content">
-					<li><a href="jsp/head.jsp">版权说明</a></li>
+					<li><a href="jsp/CopyRight.jsp">版权说明</a></li>
 					<li><a href="jsp/FileUpload.jsp">测试</a></li>
 				</ul></li>
 		</ul>
 	</div>
+	<script type="text/javascript">
+		function exit() {
+			$.post("exit", function(data) {
+				
+			});
+		}
+	</script>
 </body>
 </html>
 

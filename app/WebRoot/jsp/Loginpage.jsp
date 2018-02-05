@@ -32,29 +32,10 @@
 		top.location.href = location.href;
 </script>
 <style type="text/css">
-#div1 {
-	margin-left: 28%;
-}
-
-.loginWraper {
-	position: absolute;
+#div1 h1 {
 	width: 100%;
-	left: 0;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	z-index: 1;
-}
-
-.loginBox {
-	position: absolute;
-	width: 617px;
-	height: 330px;
-	left: 50%;
-	top: 50%;
-	margin-left: -309px;
-	margin-top: -184px;
-	padding-top: 38px
+	margin: 5px auto;
+	text-align: center;
 }
 
 @media ( max-width :617px) {
@@ -84,13 +65,12 @@
 		width: 80%
 	}
 }
-
 </style>
 </head>
 
-<body style="background:#4FADEA">
+<body style="background:#4FADEA" onkeydown="keyLogin()">
 
-	<div id="div1" style="width: 200dp; height: 200dp">
+	<div id="div1">
 		<h1>福建仲能网络科技有限公司慧为软件发布管理系统</h1>
 	</div>
 
@@ -102,7 +82,7 @@
 					<label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60d;</i></label>
 					<div class="formControls col-xs-8">
 						<input id="text1" type="text" placeholder="请输入账号"
-							class="input-text size-L" >
+							class="input-text size-L">
 					</div>
 				</div>
 				<div class="row cl">
@@ -125,26 +105,22 @@
 			</form>
 		</div>
 	</div>
-	<div class="footer" style="color: black;">福建省仲能网络科技有限公司Copy All Rigt 2017年12月</div>
+	<div class="footer" style="color: black;">福建省仲能网络科技有限公司Copy All
+		Rigt 2017年12月</div>
 	<script type="text/javascript">
 		var reg1 = /^[a-zA-Z]\w*$/i;//由字符和数字组成并且由字符开头
-
-		
-		
 		function clicks() {
 			if ($("#text1").val() == "") {
 				alert("用户名不能为空");
 				return;
-			}else if ($("#text2").val() == "") {
+			} else if ($("#text2").val() == "") {
 				alert("密码不能为空");
 				return;
-
 			} else {
 				/*当都不为空时发送请求 Ret:-1说明为何没有查到相关用户信息。0-查询到一条匹配的信息，
 				1-用户名不存在2-手机号码不存在3-微信openid不存在4-密码不正确5-用户昵称电子邮件手机号码格式不正
 				 (如用户昵称全为数字,用户昵称小于六位,电子邮件格式不正确,手机号码格式不正确等)，6-微信公众号未绑定OA */
-				 //"?time"+new Date()
-				
+				//"?time"+new Date()
 				$.post("login", {
 					"nike" : $("#text1").val(),
 					"pwd" : $("#text2").val(),
@@ -165,10 +141,10 @@
 			}
 
 		}
-
-		function authCode(image) {
-
-			image.src = "imgCode?date=" + new Date().getTime();
+		function keyLogin() {
+			if (event.keyCode == 13) { //回车键的键值为13
+				$("#btn").click(); //调用登录按钮的登录事件
+			}
 
 		}
 	</script>

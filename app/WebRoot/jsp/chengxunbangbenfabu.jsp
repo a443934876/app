@@ -33,6 +33,10 @@
 	height: 410px;
 	width: 550px;
 }
+
+input[type=button] {
+	width: 80px;
+}
 </style>
 
 </head>
@@ -70,12 +74,13 @@
 			</div>
 			<div>
 				<input id="mFile" type="file" style="float: left" /> <input
-					id="button" type="button" value="上传" onclick="Upload()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+					id="button" type="button" value="上&nbsp;&nbsp;&nbsp;传" onclick="Upload()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
 					id="tag">文件未上传</span>
 			</div>
 			<br> <br>
 			<div>
-				<input type="submit" id="submit" value="提交" style="margin-left: 30%">
+				<input type="button" id="submit" value="提&nbsp;&nbsp;&nbsp;交"
+					style="margin-left: 30%">
 			</div>
 		</div>
 	</div>
@@ -84,7 +89,7 @@
 		var filepath = "";
 		function Upload() {
 			$("#tag").html("文件上传中。。。");
-			$("#button").attr("disabled", true); 
+			$("#button").attr("disabled", true);
 			var formData = new FormData();
 			var fileName = $("#mFile")[0].files[0].name;
 			formData.append("file", $("#mFile")[0].files[0]);
@@ -99,7 +104,7 @@
 				contentType : false,
 				processData : false,
 				success : function(returndata) {
-					$("#button").attr("disabled", false); 
+					$("#button").attr("disabled", false);
 					filepath = returndata;
 					$("#tag").html("上传成功");
 					$("#tag").css({
@@ -107,7 +112,7 @@
 					});
 				},
 				error : function(returndata) {
-					$("#button").attr("disabled", false); 
+					$("#button").attr("disabled", false);
 					$("#tag").html("上传失败");
 					$("#tag").css({
 						color : "black"
@@ -137,7 +142,7 @@
 
 			if (packageid != null) {
 				$("#packageName").html(promaname);
-				
+
 			}
 			$("#submit").click(function() {
 				if ($("#packageName").html() == "") {

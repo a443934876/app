@@ -21,7 +21,7 @@ public class MyFilter extends HandlerInterceptorAdapter {
         HttpSession session = req.getSession(true);  
         
         String Uid = (String)session.getAttribute("Uid"); 
-        String Emid = (String)session.getAttribute("Emid");
+        String comid = (String)session.getAttribute("comid");
         // 判断如果没有取到用户信息，就跳转到登陆页面，提示用户进行登陆  
        
         
@@ -45,7 +45,7 @@ public class MyFilter extends HandlerInterceptorAdapter {
         	if(imgcode.equals("GoIndexPage")){
         		return true;
         	}
-        	if(Emid == null || "".equals(Emid)){
+        	if(comid == null || "".equals(comid)){
         		res.sendRedirect(COMPANY_URL); 
         		return false;
         	}

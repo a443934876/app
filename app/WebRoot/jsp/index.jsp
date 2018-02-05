@@ -38,10 +38,7 @@
 <script type="text/javascript">
 	$(document).ready(
 			function() {
-
-				var comid = 6;
-
-				/* var args = {"time":new Date()}; */
+				var comid = ${comid};
 				$.post("getNewPackageVersion", {
 					"comid" : comid
 				}, function(data) {

@@ -46,9 +46,9 @@ thead {
 }
 </style>
 <script type="text/javascript">
+	var comid = ${comid};
 	$(document).ready(function() {
 
-		var comid = 6;
 		getPackage(comid);
 		$("#button").click(function() {
 			$.ajax({

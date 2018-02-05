@@ -78,7 +78,6 @@ a {
 
 					$("#ul").append(
 							"<li><a onclick=changeLocation(this) id='"
-									+ result[i].Emids + "'name='"
 									+ result[i].comid + "'>"
 									+ result[i].comname + "</a></li>");
 									
@@ -91,7 +90,7 @@ a {
 
 		function changeLocation(a) {
 			
-			location = "GoIndexPage?Emid=" + a.id;
+			location = "GoIndexPage?comid=" + a.id;
 		}
 	</script>
 </body>

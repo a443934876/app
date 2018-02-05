@@ -50,9 +50,8 @@ thead {
 }
 </style>
 <script type="text/javascript">
+	var comid = ${comid};
 	$(document).ready(function() {
-
-		var comid = 6;
 		getPackage(comid);
 	});
 
@@ -68,25 +67,19 @@ thead {
 								+ result[i].promaname + "</option>");
 			});
 		});
-	}
-
+	};
 	function onDelete() {
-		
 
 		var pverid = JSON.stringify($("#reportTable").bootstrapTable(
 				'getSelections'));
 		$.post("dropPackageVersion", {
 			"pveridlist" : pverid,
 		}, function(date) {
-			
+
 			window.location.reload();
 		});
-	}
-
+	};
 	function query() {
-
-		var comid = 6;
-
 		$
 				.post(
 						"getPackageVersion",
@@ -170,7 +163,7 @@ thead {
 											});
 
 						});
-	}
+	};
 </script>
 
 </head>

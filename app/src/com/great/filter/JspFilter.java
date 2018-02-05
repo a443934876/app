@@ -34,7 +34,7 @@ public class JspFilter implements Filter{
 		
 		String Uid = (String)session.getAttribute("Uid"); 
 		
-        String Emid = (String)session.getAttribute("Emid");
+        String comid = (String)session.getAttribute("comid");
 		String requestUrl = request.getRequestURI();
 		
 		 if(requestUrl.endsWith("Loginpage.jsp")){
@@ -46,7 +46,7 @@ public class JspFilter implements Filter{
 		        	response.sendRedirect("../jsp/Loginpage.jsp");
 		        	
 		        }
-		        else if(Emid == null || "".equals(Emid)){
+		        else if(comid == null || "".equals(comid)){
 		        	 
 		        	 request.getRequestDispatcher("MoreComs.jsp").forward(arg0, arg1);
 		        	 arg2.doFilter(request, response);
