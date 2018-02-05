@@ -77,7 +77,7 @@ public class UserController {
 			}
 
 		} catch (Exception e) {
-
+		
 			e.printStackTrace();
 		}
 		return backMap;
@@ -195,8 +195,8 @@ public class UserController {
 					.getWebServiceMsg(key, value, "dropPackageVersion",
 							WebServiceUtil.HUIWEI_PM_URL,
 							WebServiceUtil.HUIWEI_PM_NAMESPACE);
-			result = result + (String) resultArrayList.get(0).get(0) + ";";
-
+			result =result+ (String) resultArrayList.get(0).get(0)+";";
+			
 		}
 
 		return result;
@@ -294,11 +294,11 @@ public class UserController {
 	}
 
 	// 增加app
-
+	
 	@RequestMapping("addPackageVersion")
 	@ResponseBody
-	public String addPackageVersion(@RequestParam Map<String, String> map)
-			throws Exception {
+	public String addPackageVersion(
+			@RequestParam Map<String, String> map) throws Exception {
 		String puhdate = map.get("puhdate");
 		String ver = map.get("ver");
 		String packageid = map.get("packageid");
@@ -319,14 +319,16 @@ public class UserController {
 		return result;
 
 	}
-
 	@RequestMapping("exit")
 	@ResponseBody
 	public HttpSession exit(HttpSession session) throws Exception {
 		session.invalidate();
-		return session;
+	return session;
+		
+		
 
 	}
+
 
 	// 上传文件
 	@RequestMapping(value = "upload", produces = "application/json; charset=utf-8")
@@ -336,14 +338,14 @@ public class UserController {
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		String saveFilePath = "";
 		MultipartFile file = multipartRequest.getFile("file");
-		System.out.println("file" + file);
+		System.out.println("file"+file);
 		String backStr = "";
 		if (file != null) {
 			String fileName = request.getParameter("fileName");
-			System.out.println("fileName" + fileName);
+			System.out.println("fileName"+fileName);
 			InputStream input = file.getInputStream();
 			byte[] data = new byte[input.available()];
-			System.out.println("data" + data);
+			System.out.println("data"+data);
 			input.read(data);
 			input.close();
 			String baseString = Base64.encode(data);
