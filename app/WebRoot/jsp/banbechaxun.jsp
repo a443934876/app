@@ -86,7 +86,7 @@ thead {
 						{
 							"packageid" : $("#select option:selected").val(),
 							"ver " : $("#ver").val(),
-							"comid" : comid,
+							"comid" : comid
 						},
 						function(date) {
 							var result = date.result;

@@ -48,7 +48,6 @@ thead {
 <script type="text/javascript">
 	var comid = ${comid};
 	$(document).ready(function() {
-
 		getPackage(comid);
 		$("#button").click(function() {
 			$.ajax({
@@ -71,23 +70,52 @@ thead {
 	});
 
 	function actionFormatter(value, row, index) {
-		return '<a class="mod" href="jsp/chengxunbangbenfabu.jsp" >进入</a> ';
+		var a = '<a class="release" href="jsp/chengxunbangbenfabu.jsp" >发布</a> ';
+		var b = '<a class="delete" href="jsp/chengxubaoguanli.jsp" >删除</a> ';
+		return a + b;
 	}
-	//表格  - 操作 - 事件
+
 	window.actionEvents = {
-		'click .mod' : function(e, value, row, index) {
+		'click .release' : function(e, value, row, index) {
 			sessionStorage.setItem("promaname", row.promaname);
 			sessionStorage.setItem("promaid", row.promaid);
 
 		},
+		'click .delete' : function(e, value, row, index) {
+			var result = query(row.promaid);
+			if (result == 0) {
+				$.post("dropPackage", {
+					"packid" : row.promaid
+				});
+			} else {
+				alert("该记录内有程序包，请勿删除！");
+				return;
+			}
+		}
+	};
+	function query(packageid) {
+		var result = "";
 
+		$.ajax({
+			type : 'POST',
+			url : "getPackageVersion",
+			async : false,
+			data : {
+				"packageid" : packageid,
+				"ver " : "",
+				"comid" : comid
+			},
+			success : function(data) {
+				result = data.result.length;
+			}
+		});
+		return result;
 	};
 
 	function getPackage(comid) {
 		$.post("getPackage", {
 			"packageid" : 0,
 			"comid" : comid,
-
 		}, function(date) {
 			var result = date.result;
 			var datas = [];
@@ -97,10 +125,9 @@ thead {
 					"plat" : result[i].plat,
 					"profun" : result[i].profun,
 					"promaid" : result[i].promaid
-
 				};
-
 			});
+			$("#reportTable").bootstrapTable('destroy');
 			$("#reportTable").bootstrapTable({
 				method : "post",
 				cache : false,
@@ -114,18 +141,20 @@ thead {
 				exportTypes : [ 'csv', 'txt', 'xml' ],
 				clickToSelect : true,
 				columns : [ {
-
 					field : "promaname",
 					title : "程序包名称",
 					align : "center",
 					valign : "middle",
-					sortable : "true"
+					sortable : "true",
+					width : "180"
+
 				}, {
 					field : "plat",
 					title : "兼容平台",
 					align : "center",
 					valign : "middle",
-					sortable : "true"
+					sortable : "true",
+					width : "80"
 				}, {
 					field : "profun",
 					title : "功能简述",
@@ -133,13 +162,12 @@ thead {
 					valign : "middle",
 					sortable : "true"
 				}, {
-					title : "发布新版",
+					width : "80",
+					title : "版本管理",
 					field : "promaid",
 					align : "center",
-
 					formatter : actionFormatter,
 					events : actionEvents,
-
 				} ],
 				data : datas,
 			});
@@ -147,9 +175,16 @@ thead {
 		});
 
 	}
+
+	function a() {
+		var c = b(11);
+	}
+
+	function b(id) {
+		return id;
+	}
 </script>
 </head>
-
 <body>
 	<div><jsp:include page="head.jsp" /></div>
 
@@ -190,7 +225,6 @@ thead {
 		<div class="heart1">
 			<table id="reportTable"
 				class="table table-bordered table-hover table-responsive">
-
 			</table>
 		</div>
 	</div>
